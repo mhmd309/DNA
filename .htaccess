@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /DNA/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# Protect sensitive directories
+RewriteRule ^(config|app|views|database)/ - [F,L]
