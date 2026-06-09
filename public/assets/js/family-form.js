@@ -1,9 +1,9 @@
 let childIndex = 0;
 
 function addChild(data = {}) {
-    const container = document.getElementById('childrenContainer');
-    const idx = childIndex++;
-    const html = `
+  const container = document.getElementById('childrenContainer');
+  const idx = childIndex++;
+  const html = `
     <div class="child-row bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4 border border-gray-200 dark:border-gray-600 relative" data-index="${idx}">
         <button type="button" onclick="removeChild(this)" class="absolute top-2 left-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><i class="fas fa-times"></i></button>
         <h4 class="font-semibold mb-3 text-sm">ابن/ابنة #${idx + 1}</h4>
@@ -33,7 +33,7 @@ function addChild(data = {}) {
                 <label class="block text-xs font-medium mb-1">فصيلة الدم</label>
                 <select name="children[${idx}][blood_type]" class="form-input w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
                     <option value="">--</option>
-                    ${['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(bt => `<option value="${bt}" ${data.blood_type === bt ? 'selected' : ''}>${bt}</option>`).join('')}
+                    ${['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(bt => `<option value="${bt}" ${data.blood_type === bt ? 'selected' : ''}>${bt}</option>`).join('')}
                 </select>
             </div>
             <div>
@@ -51,31 +51,31 @@ function addChild(data = {}) {
             </div>
         </div>
     </div>`;
-    container.insertAdjacentHTML('beforeend', html);
-    const row = container.lastElementChild;
-    const birthInput = row?.querySelector(`input[name="children[${idx}][birth_date]"]`);
-    if (birthInput?.value && typeof App !== 'undefined' && typeof App.calcAge === 'function') {
-        App.calcAge(birthInput.value, row.querySelector('.child-age'));
-    }
-    row?.querySelector('[data-national-id]')?.addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g, '').slice(0, 14);
-    });
-    if (typeof App !== 'undefined' && typeof App.initFileInputs === 'function') {
-        App.initFileInputs();
-    }
+  container.insertAdjacentHTML('beforeend', html);
+  const row = container.lastElementChild;
+  const birthInput = row?.querySelector(`input[name="children[${idx}][birth_date]"]`);
+  if (birthInput?.value && typeof App !== 'undefined' && typeof App.calcAge === 'function') {
+    App.calcAge(birthInput.value, row.querySelector('.child-age'));
+  }
+  row?.querySelector('[data-national-id]')?.addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 14);
+  });
+  if (typeof App !== 'undefined' && typeof App.initFileInputs === 'function') {
+    App.initFileInputs();
+  }
 }
 
 function removeChild(btn) {
-    btn.closest('.child-row').remove();
+  btn.closest('.child-row').remove();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('addChildBtn')?.addEventListener('click', () => addChild());
+  document.getElementById('addChildBtn')?.addEventListener('click', () => addChild());
 
-    document.querySelectorAll('[data-age-calc]').forEach(input => {
-        input.addEventListener('change', function() {
-            const target = document.querySelector(this.dataset.ageCalc);
-            App.calcAge(this.value, target);
-        });
+  document.querySelectorAll('[data-age-calc]').forEach(input => {
+    input.addEventListener('change', function () {
+      const target = document.querySelector(this.dataset.ageCalc);
+      App.calcAge(this.value, target);
     });
+  });
 });
