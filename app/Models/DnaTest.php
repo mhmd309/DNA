@@ -23,11 +23,10 @@ class DnaTest extends Model
       $types = 'sss';
     }
 
-    $sql = "SELECT d.*, f.family_name, f.family_code
-                FROM dna_tests d
-                LEFT JOIN families f ON f.id = d.family_id
-                WHERE {$where}
-                ORDER BY d.created_at DESC";
+    $sql = "SELECT d.*
+          FROM dna_tests d
+          WHERE {$where}
+          ORDER BY d.created_at DESC";
 
     $countSql = "SELECT COUNT(*) as total FROM dna_tests d WHERE {$where}";
 
@@ -37,8 +36,7 @@ class DnaTest extends Model
   public function findWithDetails(int $id): ?array
   {
     $stmt = $this->db->prepare(
-      'SELECT d.*, f.family_name, f.family_code FROM dna_tests d
-             LEFT JOIN families f ON f.id = d.family_id
+      'SELECT d.* FROM dna_tests d
              WHERE d.id = ? AND d.deleted_at IS NULL LIMIT 1'
     );
     $stmt->bind_param('i', $id);
@@ -56,17 +54,15 @@ class DnaTest extends Model
 
   public function create(array $data, int $userId): int
   {
-    $familyId = !empty($data['family_id']) ? (int) $data['family_id'] : null;
     $sampleDate = $data['sample_date'] ?: null;
 
     $stmt = $this->db->prepare(
-      'INSERT INTO dna_tests (person_name, family_id, sample_number, sample_date, lab_name, lab_location, doctor_name, status, result_summary, created_by)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO dna_tests (person_name, sample_number, sample_date, lab_name, lab_location, doctor_name, status, result_summary, created_by)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
     $stmt->bind_param(
-      'sisssssssi',
+      'ssssssssi',
       $data['person_name'],
-      $familyId,
       $data['sample_number'],
       $sampleDate,
       $data['lab_name'],
@@ -82,16 +78,14 @@ class DnaTest extends Model
 
   public function update(int $id, array $data): bool
   {
-    $familyId = !empty($data['family_id']) ? (int) $data['family_id'] : null;
     $sampleDate = $data['sample_date'] ?: null;
 
     $stmt = $this->db->prepare(
-      'UPDATE dna_tests SET person_name = ?, family_id = ?, sample_number = ?, sample_date = ?, lab_name = ?, lab_location = ?, doctor_name = ?, status = ?, result_summary = ? WHERE id = ?'
+      'UPDATE dna_tests SET person_name = ?, sample_number = ?, sample_date = ?, lab_name = ?, lab_location = ?, doctor_name = ?, status = ?, result_summary = ? WHERE id = ?'
     );
     $stmt->bind_param(
-      'sisssssssi',
+      'ssssssssi',
       $data['person_name'],
-      $familyId,
       $data['sample_number'],
       $sampleDate,
       $data['lab_name'],
@@ -176,5 +170,19 @@ class DnaTest extends Model
     );
     $stmt->bind_param('i', $id);
     return $stmt->execute();
+  }
+
+  public function getAllForReport(): array
+  {
+    $stmt = $this->db->prepare(
+      'SELECT d.id, d.person_name, d.sample_number, d.sample_date, d.lab_name,
+       d.lab_location, d.doctor_name, d.status, d.created_at, u.name as created_by_name
+       FROM dna_tests d
+       LEFT JOIN users u ON u.id = d.created_by
+       WHERE d.deleted_at IS NULL
+       ORDER BY d.created_at DESC'
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }
 }

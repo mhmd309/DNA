@@ -265,12 +265,7 @@ class Family extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param($types, ...$params);
         $stmt->execute();
-        if ($stmt->get_result()->fetch_assoc()) return true;
-
-        $stmt2 = $this->db->prepare('SELECT id FROM individuals WHERE national_id = ? AND deleted_at IS NULL');
-        $stmt2->bind_param('s', $nationalId);
-        $stmt2->execute();
-        return (bool) $stmt2->get_result()->fetch_assoc();
+        return (bool) $stmt->get_result()->fetch_assoc();
     }
 
     public function phoneExists(string $phone, $excludeMemberIds = null): bool
@@ -321,17 +316,12 @@ class Family extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param($types, ...$params);
         $stmt->execute();
-        if ($stmt->get_result()->fetch_assoc()) return true;
+            if ($stmt->get_result()->fetch_assoc()) return true;
 
-        $stmt2 = $this->db->prepare('SELECT id FROM individuals WHERE dna_sample_number = ? AND deleted_at IS NULL');
-        $stmt2->bind_param('s', $sample);
-        $stmt2->execute();
-        if ($stmt2->get_result()->fetch_assoc()) return true;
-
-        $stmt3 = $this->db->prepare('SELECT id FROM dna_tests WHERE sample_number = ? AND deleted_at IS NULL');
-        $stmt3->bind_param('s', $sample);
-        $stmt3->execute();
-        return (bool) $stmt3->get_result()->fetch_assoc();
+            $stmt3 = $this->db->prepare('SELECT id FROM dna_tests WHERE sample_number = ? AND deleted_at IS NULL');
+            $stmt3->bind_param('s', $sample);
+            $stmt3->execute();
+            return (bool) $stmt3->get_result()->fetch_assoc();
     }
 
     private function fieldExists(string $field, string $value, ?int $excludeId): bool
@@ -384,5 +374,21 @@ class Family extends Model
         $stmt->bind_param('i', $id);
         $stmt->execute();
         return parent::softDelete($id);
+    }
+
+    public function getAllForReport(): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT f.id, f.family_name, f.family_code, f.created_at, u.name as created_by_name,
+             COUNT(DISTINCT fm.id) as members_count
+             FROM families f
+             LEFT JOIN users u ON u.id = f.created_by
+             LEFT JOIN family_members fm ON fm.family_id = f.id AND fm.deleted_at IS NULL
+             WHERE f.deleted_at IS NULL
+             GROUP BY f.id
+             ORDER BY f.created_at DESC'
+        );
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 }

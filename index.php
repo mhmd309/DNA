@@ -60,6 +60,13 @@ $router->get('users/edit/{id}', 'UserController', 'edit', 'users.edit');
 $router->post('users/update/{id}', 'UserController', 'update', 'users.edit');
 $router->post('users/delete/{id}', 'UserController', 'delete', 'users.delete');
 
+// Reports
+$router->get('reports', 'ReportsController', 'index', 'dashboard.view');
+$router->get('reports/families', 'ReportsController', 'families', 'families.view');
+$router->get('reports/individuals', 'ReportsController', 'individuals', 'individuals.view');
+$router->get('reports/dna-tests', 'ReportsController', 'dnaTests', 'dna.view');
+$router->get('reports/users', 'ReportsController', 'users', 'users.view');
+
 // Global Search API
 $router->get('api/search', 'SearchController', 'global', 'dashboard.view');
 

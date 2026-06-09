@@ -183,4 +183,19 @@ class Individual extends Model
     $stmt->bind_param('i', $id);
     return $stmt->execute();
   }
+
+  public function getAllForReport(): array
+  {
+    $stmt = $this->db->prepare(
+      'SELECT i.id, i.name, i.national_id, i.dna_sample_number, i.blood_type,
+       i.birth_date, i.gender, i.status, f.family_name, u.name as created_by_name, i.created_at
+       FROM individuals i
+       LEFT JOIN families f ON f.id = i.family_id
+       LEFT JOIN users u ON u.id = i.created_by
+       WHERE i.deleted_at IS NULL
+       ORDER BY i.created_at DESC'
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
 }

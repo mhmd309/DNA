@@ -53,14 +53,7 @@ require_once dirname(__DIR__) . '/init.php';
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
               <td class="px-4 py-3"><?= ($result['current_page'] - 1) * $result['per_page'] + $i + 1 ?></td>
               <td class="px-4 py-3">
-                <div class="flex justify-center items-center gap-2">
-                  <?php if ($row['avatar']): ?>
-                    <img src="<?= uploadUrl($row['avatar']) ?>" class="w-8 h-8 rounded-full object-cover">
-                  <?php else: ?>
-                    <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-600"><i class="fas fa-user text-xs"></i></div>
-                  <?php endif; ?>
-                  <span class="font-medium"><?= e($row['name']) ?></span>
-                </div>
+                <span class="font-medium"><?= e($row['name']) ?></span>
               </td>
               <td class="px-4 py-3"><?= e($row['email']) ?></td>
               <td class="px-4 py-3"><span class="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded text-xs"><?= roleLabel($row['role']) ?></span></td>

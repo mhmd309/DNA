@@ -6,7 +6,7 @@
  */
 require_once dirname(__DIR__) . '/init.php';
 ?>
-<aside id="sidebar" class="fixed top-0 right-0 w-64 h-full bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 z-40 transform transition-transform duration-300 translate-x-0">
+<aside id="sidebar" class="fixed top-0 right-0 w-64 h-full bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 z-40 transform transition-transform duration-300 translate-x-0 flex flex-col">
 
   <div class="flex items-center gap-3 h-16 px-4 border-b border-gray-200 dark:border-gray-700">
     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white">
@@ -18,7 +18,8 @@ require_once dirname(__DIR__) . '/init.php';
     </div>
   </div>
 
-  <nav class="p-3 space-y-1 mt-2">
+  <nav class="p-3 flex flex-col flex-1 overflow-hidden">
+    <div class="space-y-1 overflow-y-auto flex-1">
     <?php if (can('dashboard.view')): ?>
       <a href="<?= $baseUrl ?>/dashboard" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
         <i class="fas fa-chart-pie w-5"></i> لوحة التحكم
@@ -49,14 +50,21 @@ require_once dirname(__DIR__) . '/init.php';
       </a>
     <?php endif; ?>
 
-    <hr class="my-3 border-gray-200 dark:border-gray-700">
-
-    <button data-theme-toggle class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
-      <i data-theme-icon class="fas fa-moon w-5"></i> تغيير المظهر
-    </button>
-
-    <a href="<?= $baseUrl ?>/logout" data-confirm-logout class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
-      <i class="fas fa-sign-out-alt w-5"></i> تسجيل الخروج
+    <a href="<?= $baseUrl ?>/reports" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
+      <i class="fas fa-chart-line w-5"></i> التقارير
     </a>
+    </div>
+
+    <div class="border-t border-gray-200 dark:border-gray-700 p-3 mt-auto">
+      <div class="flex items-center justify-between px-3">
+        <button data-theme-toggle title="تغيير المظهر" aria-label="تغيير المظهر" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
+          <i data-theme-icon class="fas fa-moon w-5"></i>
+        </button>
+
+        <a href="<?= $baseUrl ?>/logout" data-confirm-logout class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+          <i class="fas fa-sign-out-alt w-5"></i> <span class="sr-only">تسجيل الخروج</span>
+        </a>
+      </div>
+    </div>
   </nav>
 </aside>

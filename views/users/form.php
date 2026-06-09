@@ -49,13 +49,6 @@ $roles = ['admin' => 'مدير النظام', 'manager' => 'مدير', 'data_ent
           </select>
         </div>
       <?php endif; ?>
-      <div>
-        <label class="block text-sm font-medium mb-1">الصورة الشخصية</label>
-        <input type="file" name="avatar" accept="image/*" class="w-full text-sm">
-        <?php if (!empty($u['avatar'])): ?>
-          <img src="<?= uploadUrl($u['avatar']) ?>" class="mt-2 w-16 h-16 rounded-full object-cover border">
-        <?php endif; ?>
-      </div>
     </div>
   </div>
 

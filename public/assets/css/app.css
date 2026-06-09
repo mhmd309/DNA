@@ -358,3 +358,8 @@ input[type="file"]:hover::-webkit-file-upload-button {
 .dark .file-input-preview {
   border-color: #4b5563;
 }
+
+/* Prevent horizontal scrollbar caused by overflowing elements */
+html, body {
+  overflow-x: hidden;
+}

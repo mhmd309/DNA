@@ -31,7 +31,7 @@ class User extends Model
       $types = 'ss';
     }
 
-    $sql = "SELECT id, name, email, role, avatar, is_active, created_at FROM users WHERE {$where} ORDER BY created_at DESC";
+    $sql = "SELECT id, name, email, role, is_active, created_at FROM users WHERE {$where} ORDER BY created_at DESC";
     $countSql = "SELECT COUNT(*) as total FROM users WHERE {$where}";
 
     return $this->paginate($sql, $countSql, $params, $types, $page, $perPage);
@@ -40,9 +40,9 @@ class User extends Model
   public function create(array $data): int
   {
     $stmt = $this->db->prepare(
-      'INSERT INTO users (name, email, password, role, avatar) VALUES (?, ?, ?, ?, ?)'
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
     );
-    $stmt->bind_param('sssss', $data['name'], $data['email'], $data['password'], $data['role'], $data['avatar']);
+    $stmt->bind_param('ssss', $data['name'], $data['email'], $data['password'], $data['role']);
     $stmt->execute();
     return $this->db->lastInsertId();
   }
@@ -51,14 +51,14 @@ class User extends Model
   {
     if (!empty($data['password'])) {
       $stmt = $this->db->prepare(
-        'UPDATE users SET name = ?, email = ?, password = ?, role = ?, avatar = ?, is_active = ? WHERE id = ?'
+        'UPDATE users SET name = ?, email = ?, password = ?, role = ?, is_active = ? WHERE id = ?'
       );
-      $stmt->bind_param('sssssii', $data['name'], $data['email'], $data['password'], $data['role'], $data['avatar'], $data['is_active'], $id);
+      $stmt->bind_param('ssssii', $data['name'], $data['email'], $data['password'], $data['role'], $data['is_active'], $id);
     } else {
       $stmt = $this->db->prepare(
-        'UPDATE users SET name = ?, email = ?, role = ?, avatar = ?, is_active = ? WHERE id = ?'
+        'UPDATE users SET name = ?, email = ?, role = ?, is_active = ? WHERE id = ?'
       );
-      $stmt->bind_param('ssssii', $data['name'], $data['email'], $data['role'], $data['avatar'], $data['is_active'], $id);
+      $stmt->bind_param('sssii', $data['name'], $data['email'], $data['role'], $data['is_active'], $id);
     }
     return $stmt->execute();
   }
@@ -92,5 +92,17 @@ class User extends Model
   public function countActive(): int
   {
     return $this->count('deleted_at IS NULL');
+  }
+
+  public function getAllForReport(): array
+  {
+    $stmt = $this->db->prepare(
+      'SELECT id, name, email, role, is_active, created_at
+       FROM users
+       WHERE deleted_at IS NULL
+       ORDER BY created_at DESC'
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }
 }

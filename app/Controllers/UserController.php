@@ -52,7 +52,6 @@ class UserController extends Controller
     }
 
     $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
-    $data['avatar'] = $this->handleAvatar();
 
     $id = $this->model->create($data);
     ActivityLogger::log('create', 'user', $id, 'إضافة مستخدم: ' . $data['name']);
@@ -94,8 +93,6 @@ class UserController extends Controller
       $data['password'] = '';
     }
 
-    $avatar = $this->handleAvatar();
-    $data['avatar'] = $avatar ?: ($existing['avatar'] ?? null);
     $data['is_active'] = isset($data['is_active']) ? (int) $data['is_active'] : 1;
 
     $this->model->update($userId, $data);
@@ -156,15 +153,5 @@ class UserController extends Controller
     }
 
     return $errors;
-  }
-
-  private function handleAvatar(): ?string
-  {
-    if (empty($_FILES['avatar']['name'])) {
-      return null;
-    }
-    $config = require __DIR__ . '/../../config/app.php';
-    $upload = Uploader::upload($_FILES['avatar'], 'avatars', $config['allowed_images']);
-    return $upload['success'] ? $upload['path'] : null;
   }
 }

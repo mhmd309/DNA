@@ -99,7 +99,7 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 <script>
   const uploadUrlBase = <?= json_encode($config['upload_url']) ?>;
 </script>
-<script src="<?= $baseUrl ?>/public/assets/js/family-form.js"></script>
+<script src="<?= $baseUrl ?>/public/assets/js/family-form.js?v=<?= file_exists(__DIR__ . '/../../public/assets/js/family-form.js') ? filemtime(__DIR__ . '/../../public/assets/js/family-form.js') : time() ?>"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('familyForm')?.addEventListener('submit', e => {

@@ -21,10 +21,17 @@ abstract class Controller
     View::redirect($path);
   }
 
-  protected function input(): array
+  protected function input(?string $key = null, mixed $default = null): mixed
   {
-    $data = array_merge($_GET, $_POST);
-    return Validator::sanitizeArray($data);
+    $data = Validator::sanitizeArray(
+      array_merge($_GET, $_POST)
+    );
+
+    if ($key === null) {
+      return $data;
+    }
+
+    return $data[$key] ?? $default;
   }
 
   protected function isPost(): bool

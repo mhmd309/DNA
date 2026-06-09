@@ -24,11 +24,7 @@ require_once dirname(__DIR__) . '/init.php';
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
     <div><span class="text-gray-500 block mb-1">اسم الشخص</span><span class="font-medium"><?= e($test['person_name']) ?></span></div>
     <div><span class="text-gray-500 block mb-1">رقم العينة</span><span class="font-mono font-medium"><?= e($test['sample_number']) ?></span></div>
-    <div><span class="text-gray-500 block mb-1">العائلة</span>
-      <?php if ($test['family_id']): ?>
-        <a href="<?= $baseUrl ?>/families/show/<?= $test['family_id'] ?>" class="text-primary-600 hover:underline"><?= e($test['family_name']) ?></a>
-        <?php else: ?>-<?php endif; ?>
-    </div>
+    <!-- العائلة: تمت إزالتها من عرض الفحص -->
     <div><span class="text-gray-500 block mb-1">تاريخ سحب العينة</span><span><?= e($test['sample_date'] ?? '-') ?></span></div>
     <div><span class="text-gray-500 block mb-1">المختبر</span><span><?= e($test['lab_name'] ?? '-') ?></span></div>
     <div><span class="text-gray-500 block mb-1">مكان المختبر</span><span><?= e($test['lab_location'] ?? '-') ?></span></div>

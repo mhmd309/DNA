@@ -33,7 +33,6 @@ CREATE TABLE `users` (
   `email` VARCHAR(191) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `role` ENUM('admin', 'manager', 'data_entry', 'viewer') NOT NULL DEFAULT 'viewer',
-  `avatar` VARCHAR(255) DEFAULT NULL,
   `remember_token` VARCHAR(64) DEFAULT NULL,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -145,7 +144,6 @@ CREATE TABLE `individuals` (
 CREATE TABLE `dna_tests` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `person_name` VARCHAR(200) NOT NULL,
-  `family_id` INT UNSIGNED DEFAULT NULL,
   `sample_number` VARCHAR(50) NOT NULL,
   `sample_date` DATE DEFAULT NULL,
   `lab_name` VARCHAR(200) DEFAULT NULL,
@@ -160,13 +158,9 @@ CREATE TABLE `dna_tests` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_dna_sample_number` (`sample_number`),
   KEY `idx_dna_person` (`person_name`),
-  KEY `idx_dna_family` (`family_id`),
   KEY `idx_dna_status` (`status`),
   KEY `idx_dna_deleted` (`deleted_at`),
-  CONSTRAINT `fk_dna_family` FOREIGN KEY (`family_id`) REFERENCES `families` (`id`) ON DELETE
-  SET
-    NULL,
-    CONSTRAINT `fk_dna_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE
+  CONSTRAINT `fk_dna_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE
   SET
     NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

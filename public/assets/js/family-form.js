@@ -5,7 +5,7 @@ function addChild(data = {}) {
   const idx = childIndex++;
   const html = `
     <div class="child-row bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4 border border-gray-200 dark:border-gray-600 relative" data-index="${idx}">
-        <button type="button" onclick="removeChild(this)" class="absolute top-2 left-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><i class="fas fa-times"></i></button>
+      <button type="button" class="remove-child-btn absolute top-2 left-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><i class="fas fa-times"></i></button>
         <h4 class="font-semibold mb-3 text-sm">ابن/ابنة #${idx + 1}</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <input type="hidden" name="children[${idx}][id]" value="${data.id || ''}">
@@ -53,6 +53,12 @@ function addChild(data = {}) {
     </div>`;
   container.insertAdjacentHTML('beforeend', html);
   const row = container.lastElementChild;
+  const delBtn = row?.querySelector('.remove-child-btn');
+  if (delBtn) {
+    delBtn.addEventListener('click', async (e) => {
+      await removeChild(e.currentTarget);
+    });
+  }
   const birthInput = row?.querySelector(`input[name="children[${idx}][birth_date]"]`);
   if (birthInput?.value && typeof App !== 'undefined' && typeof App.calcAge === 'function') {
     App.calcAge(birthInput.value, row.querySelector('.child-age'));
@@ -65,8 +71,28 @@ function addChild(data = {}) {
   }
 }
 
-function removeChild(btn) {
-  btn.closest('.child-row').remove();
+async function removeChild(btn) {
+  const row = btn.closest('.child-row');
+  if (!row) return;
+  if (typeof Confirm !== 'undefined') {
+    const ok = await Confirm.show('هل أنت متأكد من حذف هذا الابن/الابنة؟ لا يمكن التراجع عن هذا الإجراء.');
+    if (!ok) return;
+  } else {
+    if (!confirm('هل أنت متأكد من حذف هذا الابن/الابنة؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+  }
+  if (row.parentNode) {
+    try {
+      if (row.parentNode.contains(row)) {
+        row.parentNode.removeChild(row);
+      } else if (typeof row.remove === 'function') {
+        row.remove();
+      }
+    } catch (e) {
+      if (typeof row.remove === 'function') row.remove();
+    }
+  } else if (typeof row.remove === 'function') {
+    row.remove();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

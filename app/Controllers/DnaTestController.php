@@ -8,7 +8,6 @@ use App\Core\ActivityLogger;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Uploader;
-use App\Models\Family;
 use App\Models\DnaTest;
 
 class DnaTestController extends Controller
@@ -53,9 +52,6 @@ class DnaTestController extends Controller
     }
 
     $id = $this->model->create($data, Auth::id());
-    if (!empty($data['family_id'])) {
-      (new Family())->upsertChildFromDnaTest($data);
-    }
     $this->handleAttachments($id);
     ActivityLogger::log('create', 'dna_test', $id, 'إضافة فحص DNA: ' . $data['sample_number']);
     $this->json(['success' => true, 'message' => 'تم إضافة الفحص بنجاح', 'redirect' => '/DNA/dna-tests']);
@@ -99,9 +95,6 @@ class DnaTestController extends Controller
     }
 
     $this->model->update($testId, $data);
-    if (!empty($data['family_id'])) {
-      (new Family())->upsertChildFromDnaTest($data, $existing);
-    }
     $this->handleAttachments($testId);
     ActivityLogger::log('update', 'dna_test', $testId, 'تعديل فحص DNA: ' . $data['sample_number']);
     $this->json(['success' => true, 'message' => 'تم تحديث الفحص بنجاح', 'redirect' => '/DNA/dna-tests/show/' . $testId]);
@@ -123,7 +116,6 @@ class DnaTestController extends Controller
     $input = $this->input();
     return [
       'person_name'    => $input['person_name'] ?? '',
-      'family_id'      => $input['family_id'] ?? '',
       'sample_number'  => $input['sample_number'] ?? '',
       'sample_date'    => $input['sample_date'] ?? '',
       'lab_name'       => $input['lab_name'] ?? '',
