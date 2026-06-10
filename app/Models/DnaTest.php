@@ -187,16 +187,31 @@ class DnaTest extends Model
 
   public function getAllForReport(): array
   {
-    $stmt = $this->db->prepare(
-      'SELECT d.id, d.person_name, d.sample_date, d.lab_name,
-       d.lab_location, d.doctor_name, d.status, d.created_at, u.name as created_by_name,
-       d.D3S1358_1, d.D3S1358_2, d.vWA_1, d.vWA_2, d.FGA_1, d.FGA_2, 
-       d.D8S1179_1, d.D8S1179_2, d.D21S11_1, d.D21S11_2
-       FROM dna_tests d
-       LEFT JOIN users u ON u.id = d.created_by
-       WHERE d.deleted_at IS NULL
-       ORDER BY d.created_at DESC'
-    );
+    $stmt = $this->db->prepare("
+      SELECT d.id, d.person_name, d.sample_date, d.lab_name,
+        d.lab_location, d.doctor_name, d.status, d.created_at, u.name as created_by_name,
+        d.D3S1358_1, d.D3S1358_2, d.vWA_1, d.vWA_2, d.FGA_1, d.FGA_2, 
+        d.D8S1179_1, d.D8S1179_2, d.D21S11_1, d.D21S11_2
+      FROM dna_tests d
+      LEFT JOIN users u ON u.id = d.created_by
+      WHERE d.deleted_at IS NULL
+      ORDER BY d.created_at DESC
+    ");
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
+
+  public function getAllWithDna(): array
+  {
+    $stmt = $this->db->prepare("
+      SELECT d.*, u.name as created_by_name
+      FROM dna_tests d
+      LEFT JOIN users u ON u.id = d.created_by
+      WHERE d.deleted_at IS NULL 
+        AND d.D3S1358_1 IS NOT NULL 
+        AND d.D3S1358_2 IS NOT NULL
+      ORDER BY d.created_at DESC
+    ");
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }

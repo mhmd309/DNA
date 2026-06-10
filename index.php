@@ -51,6 +51,7 @@ $router->get('dna-tests/show/{id}', 'DnaTestController', 'show', 'dna.view');
 $router->get('dna-tests/edit/{id}', 'DnaTestController', 'edit', 'dna.edit');
 $router->post('dna-tests/update/{id}', 'DnaTestController', 'update', 'dna.edit');
 $router->post('dna-tests/delete/{id}', 'DnaTestController', 'delete', 'dna.delete');
+$router->get('dna-tests/compare', 'DnaTestController', 'compare', 'dna.view');
 
 // Users
 $router->get('users', 'UserController', 'index', 'users.view');

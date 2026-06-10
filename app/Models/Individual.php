@@ -200,16 +200,34 @@ class Individual extends Model
 
   public function getAllForReport(): array
   {
-    $stmt = $this->db->prepare(
-      'SELECT i.id, i.name, i.national_id, i.blood_type,
-       i.birth_date, i.gender, i.status, f.family_name, u.name as created_by_name, i.created_at,
-       i.D3S1358_1, i.D3S1358_2, i.vWA_1, i.vWA_2, i.FGA_1, i.FGA_2, i.D8S1179_1, i.D8S1179_2, i.D21S11_1, i.D21S11_2
-       FROM individuals i
-       LEFT JOIN families f ON f.id = i.family_id
-       LEFT JOIN users u ON u.id = i.created_by
-       WHERE i.deleted_at IS NULL
-       ORDER BY i.created_at DESC'
-    );
+    $stmt = $this->db->prepare("
+      SELECT i.id, i.name, i.national_id, i.blood_type,
+        i.birth_date, i.gender, i.status, f.family_name, u.name as created_by_name, i.created_at,
+        i.D3S1358_1, i.D3S1358_2, i.vWA_1, i.vWA_2, i.FGA_1, i.FGA_2, i.D8S1179_1, i.D8S1179_2, i.D21S11_1, i.D21S11_2
+      FROM individuals i
+      LEFT JOIN families f ON f.id = i.family_id
+      LEFT JOIN users u ON u.id = i.created_by
+      WHERE i.deleted_at IS NULL
+      ORDER BY i.created_at DESC
+    ");
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
+
+  public function getAllWithDna(): array
+  {
+    $stmt = $this->db->prepare("
+      SELECT 
+        i.*,
+        f.family_name,
+        f.family_code,
+        'individual' as source
+      FROM individuals i
+      LEFT JOIN families f ON i.family_id = f.id
+      WHERE i.deleted_at IS NULL 
+        AND i.D3S1358_1 IS NOT NULL 
+        AND i.D3S1358_2 IS NOT NULL
+    ");
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }

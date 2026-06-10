@@ -13,7 +13,7 @@ require_once dirname(__DIR__) . '/init.php';
   <p class="text-sm text-gray-500 mt-1">قم بتنزيل التقارير بصيغة Excel</p>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
   <a href="<?= $baseUrl ?>/reports/families" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition group">
     <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4 group-hover:scale-110 transition">
       <i class="fas fa-people-roof text-xl"></i>

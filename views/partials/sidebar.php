@@ -42,6 +42,9 @@ require_once dirname(__DIR__) . '/init.php';
       <a href="<?= $baseUrl ?>/dna-tests" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
         <i class="fas fa-dna w-5"></i> فحوصات DNA
       </a>
+      <a href="<?= $baseUrl ?>/dna-tests/compare" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
+        <i class="fas fa-exchange-alt w-5"></i> مقارنة فحوصات DNA 
+      </a>
     <?php endif; ?>
 
     <?php if (can('users.view')): ?>

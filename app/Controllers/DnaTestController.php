@@ -179,4 +179,43 @@ class DnaTestController extends Controller
       }
     }
   }
+
+  public function compare(): void
+  {
+    $dnaModel = new \App\Models\DnaTest();
+    $familyModel = new \App\Models\Family();
+    $individualModel = new \App\Models\Individual();
+
+    $tests = $dnaModel->getAllWithDna();
+    $selectedTestId = isset($_GET['test_id']) ? (int)$_GET['test_id'] : null;
+    $results = [];
+
+    if ($selectedTestId) {
+      $selectedTest = $dnaModel->findWithDetails($selectedTestId);
+      if ($selectedTest) {
+        $familyParents = $familyModel->getAllParents();
+        $individuals = $individualModel->getAllWithDna();
+        $allPotentialParents = array_merge($familyParents, $individuals);
+
+        foreach ($allPotentialParents as $parent) {
+          $match = calculateDnaMatch($selectedTest, $parent);
+          $results[] = [
+            'parent' => $parent,
+            'match' => $match,
+          ];
+        }
+
+        usort($results, function ($a, $b) {
+          return $b['match']['percentage'] <=> $a['match']['percentage'];
+        });
+      }
+    }
+
+    $this->render('dna/compare', [
+      'title' => 'مقارنة الحمض النووي',
+      'tests' => $tests,
+      'selectedTestId' => $selectedTestId,
+      'results' => $results,
+    ]);
+  }
 }

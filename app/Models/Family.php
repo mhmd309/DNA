@@ -420,4 +420,23 @@ class Family extends Model
 
     return $code;
   }
+
+  public function getAllParents(): array
+  {
+    $stmt = $this->db->prepare("
+      SELECT 
+        fm.*,
+        f.family_name,
+        f.family_code,
+        'family_member' as source
+      FROM family_members fm
+      JOIN families f ON fm.family_id = f.id
+      WHERE fm.deleted_at IS NULL 
+        AND fm.role IN ('father', 'mother')
+        AND fm.D3S1358_1 IS NOT NULL 
+        AND fm.D3S1358_2 IS NOT NULL
+    ");
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
 }

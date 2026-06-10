@@ -253,3 +253,71 @@ function paginationLinks(array $result, string $basePath, string $search = ''): 
   $html .= '</nav>';
   return $html;
 }
+
+function getDnaMarkers(): array
+{
+  return ['D3S1358', 'vWA', 'FGA', 'D8S1179', 'D21S11'];
+}
+
+function calculateDnaMatch(array $profile1, array $profile2): array
+{
+  $markers = getDnaMarkers();
+  $totalMarkers = 0;
+  $matchedMarkers = 0;
+  $details = [];
+
+  foreach ($markers as $marker) {
+    $a1_1 = $profile1[$marker . '_1'] ?? null;
+    $a1_2 = $profile1[$marker . '_2'] ?? null;
+    $a2_1 = $profile2[$marker . '_1'] ?? null;
+    $a2_2 = $profile2[$marker . '_2'] ?? null;
+
+    $hasBoth1 = !empty($a1_1) && !empty($a1_2);
+    $hasBoth2 = !empty($a2_1) && !empty($a2_2);
+
+    if (!$hasBoth1 || !$hasBoth2) {
+      $details[] = [
+        'marker' => $marker,
+        'status' => 'incomplete',
+        'profile1' => [$a1_1, $a1_2],
+        'profile2' => [$a2_1, $a2_2],
+      ];
+      continue;
+    }
+
+    $totalMarkers++;
+
+    $alleles1 = [$a1_1, $a1_2];
+    $alleles2 = [$a2_1, $a2_2];
+
+    $match = false;
+    foreach ($alleles1 as $a1) {
+      foreach ($alleles2 as $a2) {
+        if ($a1 === $a2) {
+          $match = true;
+          break 2;
+        }
+      }
+    }
+
+    if ($match) {
+      $matchedMarkers++;
+    }
+
+    $details[] = [
+      'marker' => $marker,
+      'status' => $match ? 'matched' : 'unmatched',
+      'profile1' => $alleles1,
+      'profile2' => $alleles2,
+    ];
+  }
+
+  $percentage = $totalMarkers > 0 ? round(($matchedMarkers / $totalMarkers) * 100, 2) : 0;
+
+  return [
+    'percentage' => $percentage,
+    'total_markers' => $totalMarkers,
+    'matched_markers' => $matchedMarkers,
+    'details' => $details,
+  ];
+}
