@@ -184,7 +184,6 @@ class DnaTestController extends Controller
   {
     $dnaModel = new \App\Models\DnaTest();
     $familyModel = new \App\Models\Family();
-    $individualModel = new \App\Models\Individual();
 
     $tests = $dnaModel->getAllWithDna();
     $selectedTestId = isset($_GET['test_id']) ? (int)$_GET['test_id'] : null;
@@ -194,10 +193,8 @@ class DnaTestController extends Controller
       $selectedTest = $dnaModel->findWithDetails($selectedTestId);
       if ($selectedTest) {
         $familyParents = $familyModel->getAllParents();
-        $individuals = $individualModel->getAllWithDna();
-        $allPotentialParents = array_merge($familyParents, $individuals);
 
-        foreach ($allPotentialParents as $parent) {
+        foreach ($familyParents as $parent) {
           $match = calculateDnaMatch($selectedTest, $parent);
           $results[] = [
             'parent' => $parent,
