@@ -113,7 +113,8 @@ class Family extends Model
     $this->db->beginTransaction();
     try {
       $familyName = $familyData['family_name'];
-      $familyCode = $familyData['family_code'];
+      $existingFamily = $this->find($id);
+      $familyCode = $existingFamily ? $existingFamily['family_code'] : $this->generateUniqueFamilyCode();
       $notes = $familyData['notes'] ?? '';
       $stmt = $this->db->prepare(
         'UPDATE families SET family_name = ?, family_code = ?, notes = ? WHERE id = ?'
@@ -403,5 +404,20 @@ class Family extends Model
     );
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
+
+  public function generateUniqueFamilyCode(): string
+  {
+    $prefix = 'FAM';
+    $date = date('Ymd');
+    $attempts = 0;
+
+    do {
+      $random = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+      $code = $prefix . $date . $random;
+      $attempts++;
+    } while ($this->codeExists($code) && $attempts < 100);
+
+    return $code;
   }
 }

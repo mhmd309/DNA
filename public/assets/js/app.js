@@ -22,7 +22,6 @@ const App = {
         const next = current === 'dark' ? 'light' : 'dark';
         this.setTheme(next);
         localStorage.setItem('dna_theme', next);
-        Toast.show('تم تغيير المظهر', 'success');
       });
     });
   },

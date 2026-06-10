@@ -25,14 +25,10 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   <!-- Section 1 -->
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
     <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 text-sm">1</span> بيانات العائلة</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-4">
       <div>
         <label class="block text-sm font-medium mb-1">اسم العائلة *</label>
         <input type="text" name="family_name" value="<?= e($f['family_name'] ?? '') ?>" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 focus:ring-2 focus:ring-primary-500">
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">كود العائلة *</label>
-        <input type="text" name="family_code" value="<?= e($f['family_code'] ?? '') ?>" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 focus:ring-2 focus:ring-primary-500 font-mono">
       </div>
       <div class="sm:col-span-2">
         <label class="block text-sm font-medium mb-1">ملاحظات</label>

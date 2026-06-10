@@ -59,6 +59,7 @@ class FamilyController extends Controller
     }
 
     try {
+      $data['family']['family_code'] = $this->model->generateUniqueFamilyCode();
       $id = $this->model->create(
         $data['family'],
         $data['father'],
@@ -220,11 +221,6 @@ class FamilyController extends Controller
 
     if (empty($data['family']['family_name'])) {
       $errors['family_name'] = 'اسم العائلة مطلوب';
-    }
-    if (empty($data['family']['family_code'])) {
-      $errors['family_code'] = 'كود العائلة مطلوب';
-    } elseif ($this->model->codeExists($data['family']['family_code'], $excludeFamilyId)) {
-      $errors['family_code'] = 'كود العائلة مستخدم مسبقاً';
     }
 
     if (empty($data['father']['name'])) {
