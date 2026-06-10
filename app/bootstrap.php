@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+// Load Composer autoload if available
+$composerAutoload = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($composerAutoload)) {
+  require_once $composerAutoload;
+}
+
 $config = require __DIR__ . '/../config/app.php';
 date_default_timezone_set($config['timezone']);
 require_once __DIR__ . '/helpers.php';

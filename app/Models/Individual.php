@@ -116,6 +116,11 @@ class Individual extends Model
     $stmt->execute();
     if ($stmt->get_result()->fetch_assoc()) return true;
 
+    // عند التعديل، لا نتحقق من family_members لأنه قد يكون نفس الشخص
+    if ($excludeId) {
+      return false;
+    }
+
     $stmt2 = $this->db->prepare('SELECT id FROM family_members WHERE national_id = ? AND deleted_at IS NULL');
     $stmt2->bind_param('s', $nationalId);
     $stmt2->execute();
@@ -137,6 +142,11 @@ class Individual extends Model
     }
     $stmt->execute();
     if ($stmt->get_result()->fetch_assoc()) return true;
+
+    // عند التعديل، لا نتحقق من الجداول الأخرى لأنه قد يكون نفس الشخص
+    if ($excludeId) {
+      return false;
+    }
 
     $stmt2 = $this->db->prepare('SELECT id FROM family_members WHERE dna_sample_number = ? AND deleted_at IS NULL');
     $stmt2->bind_param('s', $sample);

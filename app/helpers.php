@@ -188,8 +188,6 @@ function statCardColorClasses(string $color): array
 
 function paginationLinks(array $result, string $basePath, string $search = ''): string
 {
-  if ($result['last_page'] <= 1) return '';
-
   $current = $result['current_page'];
   $last = $result['last_page'];
   $query = $search ? '&search=' . urlencode($search) : '';
@@ -200,7 +198,7 @@ function paginationLinks(array $result, string $basePath, string $search = ''): 
     $html .= '<a href="' . e($basePath) . '?page=' . ($current - 1) . $query . '" class="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><i class="fas fa-chevron-right"></i></a>';
   }
 
-  for ($i = max(1, $current - 2); $i <= min($last, $current + 2); $i++) {
+  for ($i = 1; $i <= $last; $i++) {
     $active = $i === $current ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800';
     $html .= '<a href="' . e($basePath) . '?page=' . $i . $query . '" class="px-3 py-2 rounded-lg border ' . $active . '">' . $i . '</a>';
   }

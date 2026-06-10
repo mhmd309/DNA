@@ -18,8 +18,8 @@ return [
   'phone_length'        => 11,
   'roles'          => [
     'admin'       => ['label' => 'مدير النظام', 'permissions' => ['*']],
-    'manager'     => ['label' => 'مدير', 'permissions' => ['dashboard.view', 'families.*', 'individuals.*', 'dna.*', 'users.view']],
-    'data_entry'  => ['label' => 'إدخال بيانات', 'permissions' => ['dashboard.view', 'families.view', 'families.create', 'families.edit', 'individuals.view', 'individuals.create', 'individuals.edit', 'dna.view', 'dna.create', 'dna.edit']],
+    'manager'     => ['label' => 'مدير', 'permissions' => ['dashboard.view', 'families.view', 'families.create', 'individuals.view', 'individuals.create', 'dna.view', 'dna.create', 'users.view']],
+    'data_entry'  => ['label' => 'إدخال بيانات', 'permissions' => ['dashboard.view', 'families.view', 'families.create', 'individuals.view', 'individuals.create', 'dna.view', 'dna.create']],
     'viewer'      => ['label' => 'مشاهد', 'permissions' => ['dashboard.view', 'families.view', 'individuals.view', 'dna.view']],
   ],
 ];
