@@ -26,7 +26,6 @@ require_once dirname(__DIR__) . '/init.php';
         <tr>
           <th class="px-4 py-3 text-center font-semibold">#</th>
           <th class="px-4 py-3 text-right font-semibold">اسم الشخص</th>
-          <th class="px-4 py-3 text-center font-semibold">رقم العينة</th>
           <th class="px-4 py-3 text-center font-semibold">تاريخ العينة</th>
           <th class="px-4 py-3 text-center font-semibold">المختبر</th>
           <th class="px-4 py-3 text-center font-semibold">الحالة</th>
@@ -36,14 +35,13 @@ require_once dirname(__DIR__) . '/init.php';
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
         <?php if (empty($tests)): ?>
           <tr>
-            <td colspan="7" class="px-4 py-8 text-center text-gray-500">لا توجد فحوصات</td>
+            <td colspan="6" class="px-4 py-8 text-center text-gray-500">لا توجد فحوصات</td>
           </tr>
         <?php else: ?>
           <?php foreach ($tests as $i => $row): ?>
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
               <td class="px-4 py-3 text-center"><?= $i + 1 ?></td>
               <td class="px-4 py-3 text-right font-medium"><?= e($row['person_name']) ?></td>
-              <td class="px-4 py-3 text-center text-xs"><?= e($row['sample_number']) ?></td>
               <td class="px-4 py-3 text-center text-xs"><?= $row['sample_date'] ? date('Y-m-d', strtotime($row['sample_date'])) : '-' ?></td>
               <td class="px-4 py-3 text-center"><?= e($row['lab_name'] ?? '-') ?></td>
               <td class="px-4 py-3 text-center">

@@ -37,7 +37,6 @@ require_once dirname(__DIR__) . '/init.php';
         <tr>
           <th class="px-4 py-3 text-center font-semibold">#</th>
           <th class="px-4 py-3 text-center font-semibold">اسم الشخص</th>
-          <th class="px-4 py-3 text-center font-semibold">رقم العينة</th>
           <th class="px-4 py-3 text-center font-semibold hidden lg:table-cell">المختبر</th>
           <th class="px-4 py-3 text-center font-semibold">الحالة</th>
           <th class="px-4 py-3 text-center font-semibold hidden md:table-cell">تاريخ التسجيل</th>
@@ -47,14 +46,13 @@ require_once dirname(__DIR__) . '/init.php';
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700 text-center">
         <?php if (empty($result['data'])): ?>
           <tr>
-            <td colspan="7" class="px-4 py-8 text-center text-gray-500">لا توجد فحوصات</td>
+            <td colspan="6" class="px-4 py-8 text-center text-gray-500">لا توجد فحوصات</td>
           </tr>
         <?php else: ?>
           <?php foreach ($result['data'] as $i => $row): ?>
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
               <td class="px-4 py-3"><?= ($result['current_page'] - 1) * $result['per_page'] + $i + 1 ?></td>
               <td class="px-4 py-3 font-medium"><?= e($row['person_name']) ?></td>
-              <td class="px-4 py-3 font-mono text-xs"><?= e($row['sample_number']) ?></td>
               <td class="px-4 py-3 hidden lg:table-cell"><?= e($row['lab_name'] ?? '-') ?></td>
               <td class="px-4 py-3"><?= statusBadge($row['status']) ?></td>
               <td class="px-4 py-3 hidden md:table-cell text-xs"><?= e(formatDateTime($row['created_at'])) ?></td>
@@ -65,7 +63,7 @@ require_once dirname(__DIR__) . '/init.php';
                     <a href="<?= $baseUrl ?>/dna-tests/edit/<?= $row['id'] ?>" class="p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600"><i class="fas fa-edit"></i></a>
                   <?php endif; ?>
                   <?php if (can('dna.delete')): ?>
-                    <button data-delete="<?= $baseUrl ?>/dna-tests/delete/<?= $row['id'] ?>" data-name="<?= e($row['sample_number']) ?>" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600"><i class="fas fa-trash"></i></button>
+                    <button data-delete="<?= $baseUrl ?>/dna-tests/delete/<?= $row['id'] ?>" data-name="<?= e($row['person_name']) ?>" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600"><i class="fas fa-trash"></i></button>
                   <?php endif; ?>
                 </div>
               </td>

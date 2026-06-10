@@ -162,14 +162,13 @@ class ReportsController extends Controller
       $sheet->setCellValue('A1', '#');
       $sheet->setCellValue('B1', 'الاسم');
       $sheet->setCellValue('C1', 'الرقم القومي');
-      $sheet->setCellValue('D1', 'رقم العينة');
-      $sheet->setCellValue('E1', 'فصيلة الدم');
-      $sheet->setCellValue('F1', 'تاريخ الميلاد');
-      $sheet->setCellValue('G1', 'النوع');
-      $sheet->setCellValue('H1', 'الحالة');
-      $sheet->setCellValue('I1', 'العائلة');
-      $sheet->setCellValue('J1', 'أنشئ بواسطة');
-      $sheet->setCellValue('K1', 'التاريخ');
+      $sheet->setCellValue('D1', 'فصيلة الدم');
+      $sheet->setCellValue('E1', 'تاريخ الميلاد');
+      $sheet->setCellValue('F1', 'النوع');
+      $sheet->setCellValue('G1', 'الحالة');
+      $sheet->setCellValue('H1', 'العائلة');
+      $sheet->setCellValue('I1', 'أنشئ بواسطة');
+      $sheet->setCellValue('J1', 'التاريخ');
 
       // Set header styling
       $headerStyle = [
@@ -180,7 +179,7 @@ class ReportsController extends Controller
           'startColor' => ['rgb' => 'E0E0E0']
         ]
       ];
-      $sheet->getStyle('A1:K1')->applyFromArray($headerStyle);
+      $sheet->getStyle('A1:J1')->applyFromArray($headerStyle);
 
       // Data
       $row = 2;
@@ -188,19 +187,18 @@ class ReportsController extends Controller
         $sheet->setCellValue('A' . $row, $i + 1);
         $sheet->setCellValue('B' . $row, $data['name']);
         $sheet->setCellValue('C' . $row, $data['national_id'] ?? '-');
-        $sheet->setCellValue('D' . $row, $data['dna_sample_number'] ?? '-');
-        $sheet->setCellValue('E' . $row, $data['blood_type'] ?? '-');
-        $sheet->setCellValue('F' . $row, $data['birth_date'] ?? '-');
-        $sheet->setCellValue('G' . $row, $data['gender'] === 'male' ? 'ذكر' : 'أنثى');
-        $sheet->setCellValue('H' . $row, $this->getStatusLabel($data['status']));
-        $sheet->setCellValue('I' . $row, $data['family_name'] ?? '-');
-        $sheet->setCellValue('J' . $row, $data['created_by_name'] ?? 'غير محدد');
-        $sheet->setCellValue('K' . $row, date('Y-m-d', strtotime($data['created_at'])));
+        $sheet->setCellValue('D' . $row, $data['blood_type'] ?? '-');
+        $sheet->setCellValue('E' . $row, $data['birth_date'] ?? '-');
+        $sheet->setCellValue('F' . $row, $data['gender'] === 'male' ? 'ذكر' : 'أنثى');
+        $sheet->setCellValue('G' . $row, $this->getStatusLabel($data['status']));
+        $sheet->setCellValue('H' . $row, $data['family_name'] ?? '-');
+        $sheet->setCellValue('I' . $row, $data['created_by_name'] ?? 'غير محدد');
+        $sheet->setCellValue('J' . $row, date('Y-m-d', strtotime($data['created_at'])));
         $row++;
       }
 
       // Auto size columns
-      foreach (range('A', 'K') as $col) {
+      foreach (range('A', 'J') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
       }
 
@@ -232,14 +230,24 @@ class ReportsController extends Controller
       // Headers
       $sheet->setCellValue('A1', '#');
       $sheet->setCellValue('B1', 'اسم الشخص');
-      $sheet->setCellValue('C1', 'رقم العينة');
-      $sheet->setCellValue('D1', 'تاريخ العينة');
-      $sheet->setCellValue('E1', 'المختبر');
-      $sheet->setCellValue('F1', 'الموقع');
-      $sheet->setCellValue('G1', 'اسم الطبيب');
-      $sheet->setCellValue('H1', 'الحالة');
-      $sheet->setCellValue('I1', 'أنشئ بواسطة');
-      $sheet->setCellValue('J1', 'التاريخ');
+      $sheet->setCellValue('C1', 'تاريخ العينة');
+      $sheet->setCellValue('D1', 'المختبر');
+      $sheet->setCellValue('E1', 'الموقع');
+      $sheet->setCellValue('F1', 'اسم الطبيب');
+      $sheet->setCellValue('G1', 'الحالة');
+      // Markers
+      $sheet->setCellValue('H1', 'D3S1358 1');
+      $sheet->setCellValue('I1', 'D3S1358 2');
+      $sheet->setCellValue('J1', 'vWA 1');
+      $sheet->setCellValue('K1', 'vWA 2');
+      $sheet->setCellValue('L1', 'FGA 1');
+      $sheet->setCellValue('M1', 'FGA 2');
+      $sheet->setCellValue('N1', 'D8S1179 1');
+      $sheet->setCellValue('O1', 'D8S1179 2');
+      $sheet->setCellValue('P1', 'D21S11 1');
+      $sheet->setCellValue('Q1', 'D21S11 2');
+      $sheet->setCellValue('R1', 'أنشئ بواسطة');
+      $sheet->setCellValue('S1', 'التاريخ');
 
       // Set header styling
       $headerStyle = [
@@ -250,26 +258,36 @@ class ReportsController extends Controller
           'startColor' => ['rgb' => 'E0E0E0']
         ]
       ];
-      $sheet->getStyle('A1:J1')->applyFromArray($headerStyle);
+      $sheet->getStyle('A1:S1')->applyFromArray($headerStyle);
 
       // Data
       $row = 2;
       foreach ($tests as $i => $data) {
         $sheet->setCellValue('A' . $row, $i + 1);
         $sheet->setCellValue('B' . $row, $data['person_name']);
-        $sheet->setCellValue('C' . $row, $data['sample_number']);
-        $sheet->setCellValue('D' . $row, $data['sample_date'] ?? '-');
-        $sheet->setCellValue('E' . $row, $data['lab_name'] ?? '-');
-        $sheet->setCellValue('F' . $row, $data['lab_location'] ?? '-');
-        $sheet->setCellValue('G' . $row, $data['doctor_name'] ?? '-');
-        $sheet->setCellValue('H' . $row, $this->getDnaStatusLabel($data['status']));
-        $sheet->setCellValue('I' . $row, $data['created_by_name'] ?? 'غير محدد');
-        $sheet->setCellValue('J' . $row, date('Y-m-d', strtotime($data['created_at'])));
+        $sheet->setCellValue('C' . $row, $data['sample_date'] ?? '-');
+        $sheet->setCellValue('D' . $row, $data['lab_name'] ?? '-');
+        $sheet->setCellValue('E' . $row, $data['lab_location'] ?? '-');
+        $sheet->setCellValue('F' . $row, $data['doctor_name'] ?? '-');
+        $sheet->setCellValue('G' . $row, $this->getDnaStatusLabel($data['status']));
+        // Markers
+        $sheet->setCellValue('H' . $row, $data['D3S1358_1'] ?? '-');
+        $sheet->setCellValue('I' . $row, $data['D3S1358_2'] ?? '-');
+        $sheet->setCellValue('J' . $row, $data['vWA_1'] ?? '-');
+        $sheet->setCellValue('K' . $row, $data['vWA_2'] ?? '-');
+        $sheet->setCellValue('L' . $row, $data['FGA_1'] ?? '-');
+        $sheet->setCellValue('M' . $row, $data['FGA_2'] ?? '-');
+        $sheet->setCellValue('N' . $row, $data['D8S1179_1'] ?? '-');
+        $sheet->setCellValue('O' . $row, $data['D8S1179_2'] ?? '-');
+        $sheet->setCellValue('P' . $row, $data['D21S11_1'] ?? '-');
+        $sheet->setCellValue('Q' . $row, $data['D21S11_2'] ?? '-');
+        $sheet->setCellValue('R' . $row, $data['created_by_name'] ?? 'غير محدد');
+        $sheet->setCellValue('S' . $row, date('Y-m-d', strtotime($data['created_at'])));
         $row++;
       }
 
       // Auto size columns
-      foreach (range('A', 'J') as $col) {
+      foreach (range('A', 'S') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
       }
 
@@ -394,14 +412,13 @@ class ReportsController extends Controller
     echo '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=utf-8">';
     echo '<head><style>table{border-collapse:collapse;}td,th{border:1px solid #000;padding:5px;text-align:center;}</style></head>';
     echo '<body><table>';
-    echo '<tr><th>#</th><th>الاسم</th><th>الرقم القومي</th><th>رقم العينة</th><th>فصيلة الدم</th><th>تاريخ الميلاد</th><th>النوع</th><th>الحالة</th><th>العائلة</th><th>أنشئ بواسطة</th><th>التاريخ</th></tr>';
+    echo '<tr><th>#</th><th>الاسم</th><th>الرقم القومي</th><th>فصيلة الدم</th><th>تاريخ الميلاد</th><th>النوع</th><th>الحالة</th><th>العائلة</th><th>أنشئ بواسطة</th><th>التاريخ</th></tr>';
 
     foreach ($individuals as $i => $row) {
       echo '<tr>';
       echo '<td>' . ($i + 1) . '</td>';
       echo '<td>' . htmlspecialchars($row['name']) . '</td>';
       echo '<td>' . htmlspecialchars($row['national_id'] ?? '-') . '</td>';
-      echo '<td>' . htmlspecialchars($row['dna_sample_number'] ?? '-') . '</td>';
       echo '<td>' . htmlspecialchars($row['blood_type'] ?? '-') . '</td>';
       echo '<td>' . htmlspecialchars($row['birth_date'] ?? '-') . '</td>';
       echo '<td>' . ($row['gender'] === 'male' ? 'ذكر' : 'أنثى') . '</td>';
@@ -428,18 +445,28 @@ class ReportsController extends Controller
     echo '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=utf-8">';
     echo '<head><style>table{border-collapse:collapse;}td,th{border:1px solid #000;padding:5px;text-align:center;}</style></head>';
     echo '<body><table>';
-    echo '<tr><th>#</th><th>اسم الشخص</th><th>رقم العينة</th><th>تاريخ العينة</th><th>المختبر</th><th>الموقع</th><th>اسم الطبيب</th><th>الحالة</th><th>أنشئ بواسطة</th><th>التاريخ</th></tr>';
+    echo '<tr><th>#</th><th>اسم الشخص</th><th>تاريخ العينة</th><th>المختبر</th><th>الموقع</th><th>اسم الطبيب</th><th>الحالة</th><th>D3S1358 1</th><th>D3S1358 2</th><th>vWA 1</th><th>vWA 2</th><th>FGA 1</th><th>FGA 2</th><th>D8S1179 1</th><th>D8S1179 2</th><th>D21S11 1</th><th>D21S11 2</th><th>أنشئ بواسطة</th><th>التاريخ</th></tr>';
 
     foreach ($tests as $i => $row) {
       echo '<tr>';
       echo '<td>' . ($i + 1) . '</td>';
       echo '<td>' . htmlspecialchars($row['person_name']) . '</td>';
-      echo '<td>' . htmlspecialchars($row['sample_number']) . '</td>';
       echo '<td>' . htmlspecialchars($row['sample_date'] ?? '-') . '</td>';
       echo '<td>' . htmlspecialchars($row['lab_name'] ?? '-') . '</td>';
       echo '<td>' . htmlspecialchars($row['lab_location'] ?? '-') . '</td>';
       echo '<td>' . htmlspecialchars($row['doctor_name'] ?? '-') . '</td>';
       echo '<td>' . $this->getDnaStatusLabel($row['status']) . '</td>';
+      // Markers
+      echo '<td>' . htmlspecialchars($row['D3S1358_1'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['D3S1358_2'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['vWA_1'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['vWA_2'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['FGA_1'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['FGA_2'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['D8S1179_1'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['D8S1179_2'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['D21S11_1'] ?? '-') . '</td>';
+      echo '<td>' . htmlspecialchars($row['D21S11_2'] ?? '-') . '</td>';
       echo '<td>' . htmlspecialchars($row['created_by_name'] ?? 'غير محدد') . '</td>';
       echo '<td>' . date('Y-m-d', strtotime($row['created_at'])) . '</td>';
       echo '</tr>';

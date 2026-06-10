@@ -40,10 +40,8 @@ require_once dirname(__DIR__) . '/init.php';
           <th class="px-4 py-3 text-center font-semibold">كود العائلة</th>
           <th class="px-4 py-3 text-center font-semibold hidden lg:table-cell">اسم الأب</th>
           <th class="px-4 py-3 text-center font-semibold hidden xl:table-cell">رقم الأب</th>
-          <th class="px-4 py-3 text-center font-semibold hidden xl:table-cell">عينة الأب</th>
           <th class="px-4 py-3 text-center font-semibold hidden lg:table-cell">اسم الأم</th>
           <th class="px-4 py-3 text-center font-semibold hidden xl:table-cell">رقم الأم</th>
-          <th class="px-4 py-3 text-center font-semibold hidden xl:table-cell">عينة الأم</th>
           <th class="px-4 py-3 text-center font-semibold">الأبناء</th>
           <th class="px-4 py-3 text-center font-semibold">الإجراءات</th>
         </tr>
@@ -51,7 +49,7 @@ require_once dirname(__DIR__) . '/init.php';
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700 text-center">
         <?php if (empty($result['data'])): ?>
           <tr>
-            <td colspan="11" class="px-4 py-8 text-center text-gray-500">لا توجد عائلات</td>
+            <td colspan="9" class="px-4 py-8 text-center text-gray-500">لا توجد عائلات</td>
           </tr>
         <?php else: ?>
           <?php foreach ($result['data'] as $i => $row): ?>
@@ -61,10 +59,8 @@ require_once dirname(__DIR__) . '/init.php';
               <td class="px-4 py-3"><span class="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded text-xs font-mono"><?= e($row['family_code']) ?></span></td>
               <td class="px-4 py-3 hidden lg:table-cell"><?= e($row['father_name'] ?? '-') ?></td>
               <td class="px-4 py-3 hidden xl:table-cell font-mono text-xs"><?= e($row['father_national_id'] ?? '-') ?></td>
-              <td class="px-4 py-3 hidden xl:table-cell font-mono text-xs"><?= e($row['father_dna_sample'] ?? '-') ?></td>
               <td class="px-4 py-3 hidden lg:table-cell"><?= e($row['mother_name'] ?? '-') ?></td>
               <td class="px-4 py-3 hidden xl:table-cell font-mono text-xs"><?= e($row['mother_national_id'] ?? '-') ?></td>
-              <td class="px-4 py-3 hidden xl:table-cell font-mono text-xs"><?= e($row['mother_dna_sample'] ?? '-') ?></td>
               <td class="px-4 py-3 text-center"><span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full text-xs"><?= nf((int)$row['children_count']) ?></span></td>
               <td class="px-4 py-3">
                 <div class="flex justify-center items-center gap-1">

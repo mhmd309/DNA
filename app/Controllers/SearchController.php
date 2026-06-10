@@ -58,7 +58,7 @@ class SearchController extends Controller
           'type'  => 'dna',
           'label' => 'فحص DNA',
           'title' => $item['person_name'],
-          'subtitle' => $item['sample_number'],
+          'subtitle' => $item['sample_date'] ?? '',
           'url'   => '/DNA/dna-tests/show/' . $item['id'],
           'icon'  => 'fa-dna',
         ];

@@ -128,20 +128,20 @@ function renderMemberCard(?array $member, string $role, string $color): void
   $roleLabel = match ($role) {
     'father' => 'الأب',
     'mother' => 'الأم',
-    default  => 'ابن/ابنة',
+    default => 'ابن/ابنة',
   };
 
   $colorClasses = match ($color) {
-    'blue'  => ['header' => 'bg-blue-50 dark:bg-blue-900/20', 'icon' => 'text-blue-600'],
-    'pink'  => ['header' => 'bg-pink-50 dark:bg-pink-900/20', 'icon' => 'text-pink-600'],
-    'green' => ['header' => 'bg-green-50 dark:bg-green-900/20', 'icon' => 'text-green-600'],
-    default => ['header' => 'bg-gray-50 dark:bg-gray-900/20', 'icon' => 'text-gray-600'],
+    'blue' => ['header' => 'bg-blue-50 dark:bg-blue-900/20', 'icon' => 'text-blue-600', 'marker-label' => 'text-blue-700 dark:text-blue-400'],
+    'pink' => ['header' => 'bg-pink-50 dark:bg-pink-900/20', 'icon' => 'text-pink-600', 'marker-label' => 'text-pink-700 dark:text-pink-400'],
+    'green' => ['header' => 'bg-green-50 dark:bg-green-900/20', 'icon' => 'text-green-600', 'marker-label' => 'text-green-700 dark:text-green-400'],
+    default => ['header' => 'bg-gray-50 dark:bg-gray-900/20', 'icon' => 'text-gray-600', 'marker-label' => 'text-gray-700 dark:text-gray-400'],
   };
 
   $roleIcon = match ($role) {
     'father' => 'fa-mars',
     'mother' => 'fa-venus',
-    default  => 'fa-child',
+    default => 'fa-child',
   };
 ?>
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -151,9 +151,8 @@ function renderMemberCard(?array $member, string $role, string $color): void
         <?= $roleLabel ?>: <?= e($member['name']) ?>
       </h3>
     </div>
-    <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+    <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-4">
       <?php if (!empty($member['national_id'])): ?><div><span class="text-gray-500">الرقم القومي:</span> <span class="font-mono"><?= e($member['national_id']) ?></span></div><?php endif; ?>
-      <?php if (!empty($member['dna_sample_number'])): ?><div><span class="text-gray-500">عينة DNA:</span> <span class="font-mono"><?= e($member['dna_sample_number']) ?></span></div><?php endif; ?>
       <?php if (!empty($member['blood_type'])): ?><div><span class="text-gray-500">فصيلة الدم:</span> <?= e($member['blood_type']) ?></div><?php endif; ?>
       <?php if (!empty($member['phone'])): ?><div><span class="text-gray-500">الهاتف:</span> <?= e($member['phone']) ?></div><?php endif; ?>
       <?php if (!empty($member['birth_date'])): ?><div><span class="text-gray-500">تاريخ الميلاد:</span> <?= e($member['birth_date']) ?> (<?= calcAge($member['birth_date']) ?> سنة)</div><?php endif; ?>
@@ -166,6 +165,50 @@ function renderMemberCard(?array $member, string $role, string $color): void
         </div>
       <?php endif; ?>
     </div>
+    <!-- DNA Markers -->
+    <?php if (!empty($member['D3S1358_1']) || !empty($member['D3S1358_2']) || !empty($member['vWA_1']) || !empty($member['vWA_2']) || !empty($member['FGA_1']) || !empty($member['FGA_2']) || !empty($member['D8S1179_1']) || !empty($member['D8S1179_2']) || !empty($member['D21S11_1']) || !empty($member['D21S11_2'])): ?>
+      <div class="px-5 pb-5">
+        <h4 class="font-semibold mb-3 <?= $colorClasses['marker-label'] ?>">نتائج تحليل الحمض النووي</h4>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead class="bg-gray-50 dark:bg-gray-700/50">
+              <tr>
+                <th class="px-2 py-1.5 text-center font-semibold">العلامة</th>
+                <th class="px-2 py-1.5 text-center font-semibold">الأليل 1</th>
+                <th class="px-2 py-1.5 text-center font-semibold">الأليل 2</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+              <tr>
+                <td class="px-2 py-1.5 text-center font-medium">D3S1358</td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['D3S1358_1'] ?? '-') ?></td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['D3S1358_2'] ?? '-') ?></td>
+              </tr>
+              <tr>
+                <td class="px-2 py-1.5 text-center font-medium">vWA</td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['vWA_1'] ?? '-') ?></td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['vWA_2'] ?? '-') ?></td>
+              </tr>
+              <tr>
+                <td class="px-2 py-1.5 text-center font-medium">FGA</td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['FGA_1'] ?? '-') ?></td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['FGA_2'] ?? '-') ?></td>
+              </tr>
+              <tr>
+                <td class="px-2 py-1.5 text-center font-medium">D8S1179</td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['D8S1179_1'] ?? '-') ?></td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['D8S1179_2'] ?? '-') ?></td>
+              </tr>
+              <tr>
+                <td class="px-2 py-1.5 text-center font-medium">D21S11</td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['D21S11_1'] ?? '-') ?></td>
+                <td class="px-2 py-1.5 text-center font-mono"><?= e($member['D21S11_2'] ?? '-') ?></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <?php endif; ?>
   </div>
 <?php
 }

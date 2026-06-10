@@ -73,7 +73,7 @@ class FamilyController extends Controller
       }
       $this->json(['success' => true, 'message' => 'تم إضافة العائلة بنجاح', 'redirect' => '/DNA/families']);
     } catch (\Throwable $e) {
-      $this->json(['success' => false, 'message' => 'حدث خطأ أثناء الحفظ'], 500);
+      $this->json(['success' => false, 'message' => 'حدث خطأ أثناء الحفظ: ' . $e->getMessage()], 500);
     }
   }
 
@@ -130,7 +130,7 @@ class FamilyController extends Controller
       ActivityLogger::log('update', 'family', $familyId, 'تعديل عائلة: ' . $data['family']['family_name']);
       $this->json(['success' => true, 'message' => 'تم تحديث العائلة بنجاح', 'redirect' => '/DNA/families/show/' . $familyId]);
     } catch (\Throwable $e) {
-      $this->json(['success' => false, 'message' => 'حدث خطأ أثناء التحديث'], 500);
+      $this->json(['success' => false, 'message' => 'حدث خطأ أثناء التحديث: ' . $e->getMessage()], 500);
     }
   }
 
@@ -174,23 +174,41 @@ class FamilyController extends Controller
         'id'                => $input['father_id'] ?? '',
         'name'              => $input['father_name'] ?? '',
         'national_id'       => $input['father_national_id'] ?? '',
-        'dna_sample_number' => $input['father_dna_sample'] ?? '',
         'blood_type'        => $input['father_blood_type'] ?? '',
         'phone'             => $input['father_phone'] ?? '',
         'birth_date'        => $input['father_birth_date'] ?? '',
         'address'           => $input['father_address'] ?? '',
         'id_card_image'     => $input['father_id_card_image'] ?? '',
+        'D3S1358_1'         => $input['father_D3S1358_1'] ?? null,
+        'D3S1358_2'         => $input['father_D3S1358_2'] ?? null,
+        'vWA_1'             => $input['father_vWA_1'] ?? null,
+        'vWA_2'             => $input['father_vWA_2'] ?? null,
+        'FGA_1'             => $input['father_FGA_1'] ?? null,
+        'FGA_2'             => $input['father_FGA_2'] ?? null,
+        'D8S1179_1'         => $input['father_D8S1179_1'] ?? null,
+        'D8S1179_2'         => $input['father_D8S1179_2'] ?? null,
+        'D21S11_1'          => $input['father_D21S11_1'] ?? null,
+        'D21S11_2'          => $input['father_D21S11_2'] ?? null,
       ],
       'mother' => [
         'id'                => $input['mother_id'] ?? '',
         'name'              => $input['mother_name'] ?? '',
         'national_id'       => $input['mother_national_id'] ?? '',
-        'dna_sample_number' => $input['mother_dna_sample'] ?? '',
         'blood_type'        => $input['mother_blood_type'] ?? '',
         'phone'             => $input['mother_phone'] ?? '',
         'birth_date'        => $input['mother_birth_date'] ?? '',
         'address'           => $input['mother_address'] ?? '',
         'id_card_image'     => $input['mother_id_card_image'] ?? '',
+        'D3S1358_1'         => $input['mother_D3S1358_1'] ?? null,
+        'D3S1358_2'         => $input['mother_D3S1358_2'] ?? null,
+        'vWA_1'             => $input['mother_vWA_1'] ?? null,
+        'vWA_2'             => $input['mother_vWA_2'] ?? null,
+        'FGA_1'             => $input['mother_FGA_1'] ?? null,
+        'FGA_2'             => $input['mother_FGA_2'] ?? null,
+        'D8S1179_1'         => $input['mother_D8S1179_1'] ?? null,
+        'D8S1179_2'         => $input['mother_D8S1179_2'] ?? null,
+        'D21S11_1'          => $input['mother_D21S11_1'] ?? null,
+        'D21S11_2'          => $input['mother_D21S11_2'] ?? null,
       ],
       'children' => $children,
     ];
@@ -236,7 +254,6 @@ class FamilyController extends Controller
 
     $nationalIds = [];
     $phones = [];
-    $dnaSamples = [];
 
     foreach ($members as $member) {
       $m = $member['data'];
@@ -264,15 +281,6 @@ class FamilyController extends Controller
           $errors[$member['key'] . '_phone'] = "رقم الهاتف لـ{$label} مستخدم مسبقاً";
         }
         $phones[] = $m['phone'];
-      }
-
-      if (!empty($m['dna_sample_number'])) {
-        if (in_array($m['dna_sample_number'], $dnaSamples, true)) {
-          $errors[$member['key'] . '_dna'] = "رقم عينة DNA لـ{$label} مكرر";
-        } elseif ($this->model->dnaSampleExists($m['dna_sample_number'], $existingMemberIds)) {
-          $errors[$member['key'] . '_dna'] = "رقم عينة DNA لـ{$label} مستخدم مسبقاً";
-        }
-        $dnaSamples[] = $m['dna_sample_number'];
       }
     }
 

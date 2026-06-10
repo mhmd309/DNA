@@ -106,7 +106,7 @@ class IndividualController extends Controller
     if ($newFamilyId > 0) {
       $familyModel->upsertChildFromIndividual($data);
     } elseif ($oldFamilyId > 0) {
-      $familyModel->softDeleteChildByIdentifiers($oldFamilyId, $existing['national_id'] ?? null, $existing['dna_sample_number'] ?? null);
+      $familyModel->softDeleteChildByIdentifiers($oldFamilyId, $existing['national_id'] ?? null, null);
     }
     ActivityLogger::log('update', 'individual', $individualId, 'تعديل فرد: ' . $data['name']);
     $this->json(['success' => true, 'message' => 'تم تحديث الفرد بنجاح', 'redirect' => '/DNA/individuals/show/' . $individualId]);
@@ -129,12 +129,21 @@ class IndividualController extends Controller
     return [
       'name'              => $input['name'] ?? '',
       'national_id'       => $input['national_id'] ?? '',
-      'dna_sample_number' => $input['dna_sample_number'] ?? '',
       'blood_type'        => $input['blood_type'] ?? '',
       'birth_date'        => $input['birth_date'] ?? '',
       'gender'            => $input['gender'] ?? '',
       'family_id'         => $input['family_id'] ?? '',
       'status'            => $input['status'] ?? 'normal',
+      'D3S1358_1'         => $input['D3S1358_1'] ?? null,
+      'D3S1358_2'         => $input['D3S1358_2'] ?? null,
+      'vWA_1'             => $input['vWA_1'] ?? null,
+      'vWA_2'             => $input['vWA_2'] ?? null,
+      'FGA_1'             => $input['FGA_1'] ?? null,
+      'FGA_2'             => $input['FGA_2'] ?? null,
+      'D8S1179_1'         => $input['D8S1179_1'] ?? null,
+      'D8S1179_2'         => $input['D8S1179_2'] ?? null,
+      'D21S11_1'          => $input['D21S11_1'] ?? null,
+      'D21S11_2'          => $input['D21S11_2'] ?? null,
     ];
   }
 
@@ -160,9 +169,6 @@ class IndividualController extends Controller
       } elseif ($this->model->nationalIdExists($data['national_id'], $excludeId)) {
         $errors['national_id'] = 'الرقم القومي مستخدم مسبقاً';
       }
-    }
-    if (!empty($data['dna_sample_number']) && $this->model->dnaSampleExists($data['dna_sample_number'], $excludeId)) {
-      $errors['dna_sample_number'] = 'رقم عينة DNA مستخدم مسبقاً';
     }
 
     return $errors;

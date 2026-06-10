@@ -27,10 +27,6 @@ if (!empty($t['family_name'])) {
         <label class="block text-sm font-medium mb-1">اسم الشخص *</label>
         <input type="text" name="person_name" value="<?= e($t['person_name'] ?? '') ?>" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50">
       </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">رقم العينة *</label>
-        <input type="text" name="sample_number" value="<?= e($t['sample_number'] ?? '') ?>" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 font-mono">
-      </div>
       <!-- Removed family selector per requirements -->
       <div>
         <label class="block text-sm font-medium mb-1">تاريخ سحب العينة</label>
@@ -60,17 +56,84 @@ if (!empty($t['family_name'])) {
         <label class="block text-sm font-medium mb-1">ملخص النتيجة</label>
         <textarea name="result_summary" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50"><?= e($t['result_summary'] ?? '') ?></textarea>
       </div>
-      <div class="sm:col-span-2">
-        <label class="block text-sm font-medium mb-1">مرفقات (PDF, JPG, PNG, WEBP)</label>
-        <input type="file" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" class="w-full text-sm">
-        <?php if (!empty($t['attachments'])): ?>
-          <div class="mt-2 space-y-1">
-            <?php foreach ($t['attachments'] as $att): ?>
-              <div class="text-xs text-gray-500 flex items-center gap-2"><i class="fas fa-paperclip"></i> <?= e($att['file_name']) ?></div>
-            <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
-      </div>
+    </div>
+  </div>
+
+  <!-- DNA Markers Section -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4 mt-6">
+    <h2 class="text-lg font-bold mb-4">نتائج تحليل الحمض النووي (Markers)</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 dark:bg-gray-700/50">
+          <tr>
+            <th class="px-3 py-2 text-center font-semibold">العلامة (Marker)</th>
+            <th class="px-3 py-2 text-center font-semibold">الأليل 1 (Allele 1)</th>
+            <th class="px-3 py-2 text-center font-semibold">الأليل 2 (Allele 2)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="px-3 py-2 text-center font-medium">D3S1358</td>
+            <td class="px-3 py-2">
+              <input type="text" name="D3S1358_1" value="<?= e($t['D3S1358_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 15">
+            </td>
+            <td class="px-3 py-2">
+              <input type="text" name="D3S1358_2" value="<?= e($t['D3S1358_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 17">
+            </td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2 text-center font-medium">vWA</td>
+            <td class="px-3 py-2">
+              <input type="text" name="vWA_1" value="<?= e($t['vWA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 16">
+            </td>
+            <td class="px-3 py-2">
+              <input type="text" name="vWA_2" value="<?= e($t['vWA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 18">
+            </td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2 text-center font-medium">FGA</td>
+            <td class="px-3 py-2">
+              <input type="text" name="FGA_1" value="<?= e($t['FGA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 22">
+            </td>
+            <td class="px-3 py-2">
+              <input type="text" name="FGA_2" value="<?= e($t['FGA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 24">
+            </td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2 text-center font-medium">D8S1179</td>
+            <td class="px-3 py-2">
+              <input type="text" name="D8S1179_1" value="<?= e($t['D8S1179_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 12">
+            </td>
+            <td class="px-3 py-2">
+              <input type="text" name="D8S1179_2" value="<?= e($t['D8S1179_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 13">
+            </td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2 text-center font-medium">D21S11</td>
+            <td class="px-3 py-2">
+              <input type="text" name="D21S11_1" value="<?= e($t['D21S11_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 29">
+            </td>
+            <td class="px-3 py-2">
+              <input type="text" name="D21S11_2" value="<?= e($t['D21S11_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 31">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Attachments -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mt-6">
+    <div>
+      <label class="block text-sm font-medium mb-1">مرفقات (PDF, JPG, PNG, WEBP)</label>
+      <input type="file" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" class="w-full text-sm">
+      <?php if (!empty($t['attachments'])): ?>
+        <div class="mt-2 space-y-1">
+          <?php foreach ($t['attachments'] as $att): ?>
+            <div class="text-xs text-gray-500 flex items-center gap-2"><i class="fas fa-paperclip"></i> <?= e($att['file_name']) ?></div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 

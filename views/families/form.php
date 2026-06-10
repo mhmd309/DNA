@@ -49,7 +49,6 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
       <input type="hidden" name="father_id_card_image" value="<?= e($father['id_card_image'] ?? '') ?>">
       <div><label class="block text-sm font-medium mb-1">اسم الأب *</label><input type="text" name="father_name" value="<?= e($father['name'] ?? '') ?>" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50"></div>
       <div><label class="block text-sm font-medium mb-1">الرقم القومي</label><input type="text" name="father_national_id" value="<?= e($father['national_id'] ?? '') ?>" <?= nationalIdAttrs() ?> class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 font-mono"></div>
-      <div><label class="block text-sm font-medium mb-1">رقم عينة DNA</label><input type="text" name="father_dna_sample" value="<?= e($father['dna_sample_number'] ?? '') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 font-mono"></div>
       <div><label class="block text-sm font-medium mb-1">فصيلة الدم</label><select name="father_blood_type" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50">
           <option value="">--</option><?php foreach ($bloodTypes as $bt): ?><option value="<?= $bt ?>" <?= ($father['blood_type'] ?? '') === $bt ? 'selected' : '' ?>><?= $bt ?></option><?php endforeach; ?>
         </select></div>
@@ -58,6 +57,48 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
       <div><label class="block text-sm font-medium mb-1">العمر</label><input type="text" id="fatherAge" readonly value="<?= calcAge($father['birth_date'] ?? null) ?? '' ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"></div>
       <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1">العنوان</label><input type="text" name="father_address" value="<?= e($father['address'] ?? '') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50"></div>
       <div><label class="block text-sm font-medium mb-1">صورة البطاقة</label><input type="file" name="father_id_card" accept="image/*" class="w-full text-sm"><?php if (!empty($father['id_card_image'])): ?><img src="<?= uploadUrl($father['id_card_image']) ?>" class="mt-2 h-16 rounded border"><?php endif; ?></div>
+    </div>
+    <!-- DNA Markers for Father -->
+    <div class="mt-6">
+      <h3 class="text-md font-semibold mb-3 text-blue-700 dark:text-blue-400">نتائج تحليل الحمض النووي للأب</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 dark:bg-gray-700/50">
+            <tr>
+              <th class="px-3 py-2 text-center font-semibold">العلامة (Marker)</th>
+              <th class="px-3 py-2 text-center font-semibold">الأليل 1 (Allele 1)</th>
+              <th class="px-3 py-2 text-center font-semibold">الأليل 2 (Allele 2)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">D3S1358</td>
+              <td class="px-3 py-2"><input type="text" name="father_D3S1358_1" value="<?= e($father['D3S1358_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 15"></td>
+              <td class="px-3 py-2"><input type="text" name="father_D3S1358_2" value="<?= e($father['D3S1358_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 17"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">vWA</td>
+              <td class="px-3 py-2"><input type="text" name="father_vWA_1" value="<?= e($father['vWA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 16"></td>
+              <td class="px-3 py-2"><input type="text" name="father_vWA_2" value="<?= e($father['vWA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 18"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">FGA</td>
+              <td class="px-3 py-2"><input type="text" name="father_FGA_1" value="<?= e($father['FGA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 21"></td>
+              <td class="px-3 py-2"><input type="text" name="father_FGA_2" value="<?= e($father['FGA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 24"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">D8S1179</td>
+              <td class="px-3 py-2"><input type="text" name="father_D8S1179_1" value="<?= e($father['D8S1179_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 10"></td>
+              <td class="px-3 py-2"><input type="text" name="father_D8S1179_2" value="<?= e($father['D8S1179_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 14"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">D21S11</td>
+              <td class="px-3 py-2"><input type="text" name="father_D21S11_1" value="<?= e($father['D21S11_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 28"></td>
+              <td class="px-3 py-2"><input type="text" name="father_D21S11_2" value="<?= e($father['D21S11_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 30"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -69,7 +110,6 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
       <input type="hidden" name="mother_id_card_image" value="<?= e($mother['id_card_image'] ?? '') ?>">
       <div><label class="block text-sm font-medium mb-1">اسم الأم *</label><input type="text" name="mother_name" value="<?= e($mother['name'] ?? '') ?>" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50"></div>
       <div><label class="block text-sm font-medium mb-1">الرقم القومي</label><input type="text" name="mother_national_id" value="<?= e($mother['national_id'] ?? '') ?>" <?= nationalIdAttrs() ?> class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 font-mono"></div>
-      <div><label class="block text-sm font-medium mb-1">رقم عينة DNA</label><input type="text" name="mother_dna_sample" value="<?= e($mother['dna_sample_number'] ?? '') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 font-mono"></div>
       <div><label class="block text-sm font-medium mb-1">فصيلة الدم</label><select name="mother_blood_type" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50">
           <option value="">--</option><?php foreach ($bloodTypes as $bt): ?><option value="<?= $bt ?>" <?= ($mother['blood_type'] ?? '') === $bt ? 'selected' : '' ?>><?= $bt ?></option><?php endforeach; ?>
         </select></div>
@@ -78,6 +118,48 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
       <div><label class="block text-sm font-medium mb-1">العمر</label><input type="text" id="motherAge" readonly value="<?= calcAge($mother['birth_date'] ?? null) ?? '' ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"></div>
       <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1">العنوان</label><input type="text" name="mother_address" value="<?= e($mother['address'] ?? '') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50"></div>
       <div><label class="block text-sm font-medium mb-1">صورة البطاقة</label><input type="file" name="mother_id_card" accept="image/*" class="w-full text-sm"><?php if (!empty($mother['id_card_image'])): ?><img src="<?= uploadUrl($mother['id_card_image']) ?>" class="mt-2 h-16 rounded border"><?php endif; ?></div>
+    </div>
+    <!-- DNA Markers for Mother -->
+    <div class="mt-6">
+      <h3 class="text-md font-semibold mb-3 text-pink-700 dark:text-pink-400">نتائج تحليل الحمض النووي للأم</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 dark:bg-gray-700/50">
+            <tr>
+              <th class="px-3 py-2 text-center font-semibold">العلامة (Marker)</th>
+              <th class="px-3 py-2 text-center font-semibold">الأليل 1 (Allele 1)</th>
+              <th class="px-3 py-2 text-center font-semibold">الأليل 2 (Allele 2)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">D3S1358</td>
+              <td class="px-3 py-2"><input type="text" name="mother_D3S1358_1" value="<?= e($mother['D3S1358_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 15"></td>
+              <td class="px-3 py-2"><input type="text" name="mother_D3S1358_2" value="<?= e($mother['D3S1358_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 17"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">vWA</td>
+              <td class="px-3 py-2"><input type="text" name="mother_vWA_1" value="<?= e($mother['vWA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 16"></td>
+              <td class="px-3 py-2"><input type="text" name="mother_vWA_2" value="<?= e($mother['vWA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 18"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">FGA</td>
+              <td class="px-3 py-2"><input type="text" name="mother_FGA_1" value="<?= e($mother['FGA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 21"></td>
+              <td class="px-3 py-2"><input type="text" name="mother_FGA_2" value="<?= e($mother['FGA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 24"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">D8S1179</td>
+              <td class="px-3 py-2"><input type="text" name="mother_D8S1179_1" value="<?= e($mother['D8S1179_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 10"></td>
+              <td class="px-3 py-2"><input type="text" name="mother_D8S1179_2" value="<?= e($mother['D8S1179_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 14"></td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-center font-medium">D21S11</td>
+              <td class="px-3 py-2"><input type="text" name="mother_D21S11_1" value="<?= e($mother['D21S11_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 28"></td>
+              <td class="px-3 py-2"><input type="text" name="mother_D21S11_2" value="<?= e($mother['D21S11_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono bg-white dark:bg-gray-800" placeholder="مثلاً: 30"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

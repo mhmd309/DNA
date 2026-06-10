@@ -37,7 +37,7 @@ require_once dirname(__DIR__) . '/init.php';
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
         <?php if (empty($individuals)): ?>
           <tr>
-            <td colspan="8" class="px-4 py-8 text-center text-gray-500">لا يوجد أفراد</td>
+            <td colspan="7" class="px-4 py-8 text-center text-gray-500">لا يوجد أفراد</td>
           </tr>
         <?php else: ?>
           <?php foreach ($individuals as $i => $row): ?>
@@ -45,7 +45,6 @@ require_once dirname(__DIR__) . '/init.php';
               <td class="px-4 py-3 text-center"><?= $i + 1 ?></td>
               <td class="px-4 py-3 text-right font-medium"><?= e($row['name']) ?></td>
               <td class="px-4 py-3 text-center text-xs"><?= e($row['national_id'] ?? '-') ?></td>
-              <td class="px-4 py-3 text-center text-xs"><?= e($row['dna_sample_number'] ?? '-') ?></td>
               <td class="px-4 py-3 text-center">
                 <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs"><?= $row['gender'] === 'male' ? 'ذكر' : 'أنثى' ?></span>
               </td>

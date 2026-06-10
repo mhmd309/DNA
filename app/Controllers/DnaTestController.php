@@ -53,7 +53,7 @@ class DnaTestController extends Controller
 
     $id = $this->model->create($data, Auth::id());
     $this->handleAttachments($id);
-    ActivityLogger::log('create', 'dna_test', $id, 'إضافة فحص DNA: ' . $data['sample_number']);
+    ActivityLogger::log('create', 'dna_test', $id, 'إضافة فحص DNA: ' . $data['person_name']);
     $this->json(['success' => true, 'message' => 'تم إضافة الفحص بنجاح', 'redirect' => '/DNA/dna-tests']);
   }
 
@@ -88,7 +88,7 @@ class DnaTestController extends Controller
     }
 
     $data = $this->parseInput();
-    $errors = $this->validate($data, $testId);
+    $errors = $this->validate($data);
 
     if ($errors) {
       $this->json(['success' => false, 'message' => reset($errors), 'errors' => $errors], 422);
@@ -96,7 +96,7 @@ class DnaTestController extends Controller
 
     $this->model->update($testId, $data);
     $this->handleAttachments($testId);
-    ActivityLogger::log('update', 'dna_test', $testId, 'تعديل فحص DNA: ' . $data['sample_number']);
+    ActivityLogger::log('update', 'dna_test', $testId, 'تعديل فحص DNA: ' . $data['person_name']);
     $this->json(['success' => true, 'message' => 'تم تحديث الفحص بنجاح', 'redirect' => '/DNA/dna-tests/show/' . $testId]);
   }
 
@@ -107,7 +107,7 @@ class DnaTestController extends Controller
       $this->json(['success' => false, 'message' => 'الفحص غير موجود'], 404);
     }
     $this->model->softDelete((int) $id);
-    ActivityLogger::log('delete', 'dna_test', (int) $id, 'حذف فحص DNA: ' . $test['sample_number']);
+    ActivityLogger::log('delete', 'dna_test', (int) $id, 'حذف فحص DNA: ' . $test['person_name']);
     $this->json(['success' => true, 'message' => 'تم حذف الفحص بنجاح']);
   }
 
@@ -116,28 +116,32 @@ class DnaTestController extends Controller
     $input = $this->input();
     return [
       'person_name'    => $input['person_name'] ?? '',
-      'sample_number'  => $input['sample_number'] ?? '',
       'sample_date'    => $input['sample_date'] ?? '',
       'lab_name'       => $input['lab_name'] ?? '',
       'lab_location'   => $input['lab_location'] ?? '',
       'doctor_name'    => $input['doctor_name'] ?? '',
       'status'         => $input['status'] ?? 'pending',
       'result_summary' => $input['result_summary'] ?? '',
+      'D3S1358_1'      => $input['D3S1358_1'] ?? null,
+      'D3S1358_2'      => $input['D3S1358_2'] ?? null,
+      'vWA_1'          => $input['vWA_1'] ?? null,
+      'vWA_2'          => $input['vWA_2'] ?? null,
+      'FGA_1'          => $input['FGA_1'] ?? null,
+      'FGA_2'          => $input['FGA_2'] ?? null,
+      'D8S1179_1'      => $input['D8S1179_1'] ?? null,
+      'D8S1179_2'      => $input['D8S1179_2'] ?? null,
+      'D21S11_1'       => $input['D21S11_1'] ?? null,
+      'D21S11_2'       => $input['D21S11_2'] ?? null,
     ];
   }
 
-  private function validate(array $data, ?int $excludeId = null): array
+  private function validate(array $data): array
   {
     $errors = [];
     $statuses = ['completed', 'failed', 'pending'];
 
     if (empty($data['person_name'])) {
       $errors['person_name'] = 'اسم الشخص مطلوب';
-    }
-    if (empty($data['sample_number'])) {
-      $errors['sample_number'] = 'رقم العينة مطلوب';
-    } elseif ($this->model->sampleExists($data['sample_number'], $excludeId)) {
-      $errors['sample_number'] = 'رقم العينة مستخدم مسبقاً';
     }
     if (!in_array($data['status'], $statuses, true)) {
       $errors['status'] = 'الحالة غير صالحة';

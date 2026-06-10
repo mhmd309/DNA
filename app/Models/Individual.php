@@ -17,10 +17,10 @@ class Individual extends Model
     $types = '';
 
     if ($search !== '') {
-      $where .= ' AND (i.name LIKE ? OR i.national_id LIKE ? OR i.dna_sample_number LIKE ?)';
+      $where .= ' AND (i.name LIKE ? OR i.national_id LIKE ?)';
       $like = "%{$search}%";
-      $params = [$like, $like, $like];
-      $types = 'sss';
+      $params = [$like, $like];
+      $types = 'ss';
     }
 
     $sql = "SELECT i.*, f.family_name, f.family_code
@@ -50,24 +50,42 @@ class Individual extends Model
   {
     $familyId = !empty($data['family_id']) ? (int) $data['family_id'] : null;
     $nationalId = $data['national_id'] ?: null;
-    $dnaSample = $data['dna_sample_number'] ?: null;
     $bloodType = $data['blood_type'] ?: null;
     $birthDate = $data['birth_date'] ?: null;
+    $d3s1358_1 = $data['D3S1358_1'] ?? null;
+    $d3s1358_2 = $data['D3S1358_2'] ?? null;
+    $vwa_1 = $data['vWA_1'] ?? null;
+    $vwa_2 = $data['vWA_2'] ?? null;
+    $fga_1 = $data['FGA_1'] ?? null;
+    $fga_2 = $data['FGA_2'] ?? null;
+    $d8s1179_1 = $data['D8S1179_1'] ?? null;
+    $d8s1179_2 = $data['D8S1179_2'] ?? null;
+    $d21s11_1 = $data['D21S11_1'] ?? null;
+    $d21s11_2 = $data['D21S11_2'] ?? null;
 
     $stmt = $this->db->prepare(
-      'INSERT INTO individuals (name, national_id, dna_sample_number, blood_type, birth_date, gender, family_id, status, created_by)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO individuals (name, national_id, blood_type, birth_date, gender, family_id, status, D3S1358_1, D3S1358_2, vWA_1, vWA_2, FGA_1, FGA_2, D8S1179_1, D8S1179_2, D21S11_1, D21S11_2, created_by)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
     $stmt->bind_param(
-      'ssssssisi',
+      'sssssisssssssssssi',
       $data['name'],
       $nationalId,
-      $dnaSample,
       $bloodType,
       $birthDate,
       $data['gender'],
       $familyId,
       $data['status'],
+      $d3s1358_1,
+      $d3s1358_2,
+      $vwa_1,
+      $vwa_2,
+      $fga_1,
+      $fga_2,
+      $d8s1179_1,
+      $d8s1179_2,
+      $d21s11_1,
+      $d21s11_2,
       $userId
     );
     $stmt->execute();
@@ -78,23 +96,41 @@ class Individual extends Model
   {
     $familyId = !empty($data['family_id']) ? (int) $data['family_id'] : null;
     $nationalId = $data['national_id'] ?: null;
-    $dnaSample = $data['dna_sample_number'] ?: null;
     $bloodType = $data['blood_type'] ?: null;
     $birthDate = $data['birth_date'] ?: null;
+    $d3s1358_1 = $data['D3S1358_1'] ?? null;
+    $d3s1358_2 = $data['D3S1358_2'] ?? null;
+    $vwa_1 = $data['vWA_1'] ?? null;
+    $vwa_2 = $data['vWA_2'] ?? null;
+    $fga_1 = $data['FGA_1'] ?? null;
+    $fga_2 = $data['FGA_2'] ?? null;
+    $d8s1179_1 = $data['D8S1179_1'] ?? null;
+    $d8s1179_2 = $data['D8S1179_2'] ?? null;
+    $d21s11_1 = $data['D21S11_1'] ?? null;
+    $d21s11_2 = $data['D21S11_2'] ?? null;
 
     $stmt = $this->db->prepare(
-      'UPDATE individuals SET name = ?, national_id = ?, dna_sample_number = ?, blood_type = ?, birth_date = ?, gender = ?, family_id = ?, status = ? WHERE id = ?'
+      'UPDATE individuals SET name = ?, national_id = ?, blood_type = ?, birth_date = ?, gender = ?, family_id = ?, status = ?, D3S1358_1 = ?, D3S1358_2 = ?, vWA_1 = ?, vWA_2 = ?, FGA_1 = ?, FGA_2 = ?, D8S1179_1 = ?, D8S1179_2 = ?, D21S11_1 = ?, D21S11_2 = ? WHERE id = ?'
     );
     $stmt->bind_param(
-      'ssssssisi',
+      'sssssisssssssssssi',
       $data['name'],
       $nationalId,
-      $dnaSample,
       $bloodType,
       $birthDate,
       $data['gender'],
       $familyId,
       $data['status'],
+      $d3s1358_1,
+      $d3s1358_2,
+      $vwa_1,
+      $vwa_2,
+      $fga_1,
+      $fga_2,
+      $d8s1179_1,
+      $d8s1179_2,
+      $d21s11_1,
+      $d21s11_2,
       $id
     );
     return $stmt->execute();
@@ -127,38 +163,6 @@ class Individual extends Model
     return (bool) $stmt2->get_result()->fetch_assoc();
   }
 
-  public function dnaSampleExists(string $sample, ?int $excludeId = null): bool
-  {
-    if (empty($sample)) return false;
-
-    $sql = 'SELECT id FROM individuals WHERE dna_sample_number = ? AND deleted_at IS NULL';
-    if ($excludeId) {
-      $sql .= ' AND id != ?';
-      $stmt = $this->db->prepare($sql);
-      $stmt->bind_param('si', $sample, $excludeId);
-    } else {
-      $stmt = $this->db->prepare($sql);
-      $stmt->bind_param('s', $sample);
-    }
-    $stmt->execute();
-    if ($stmt->get_result()->fetch_assoc()) return true;
-
-    // عند التعديل، لا نتحقق من الجداول الأخرى لأنه قد يكون نفس الشخص
-    if ($excludeId) {
-      return false;
-    }
-
-    $stmt2 = $this->db->prepare('SELECT id FROM family_members WHERE dna_sample_number = ? AND deleted_at IS NULL');
-    $stmt2->bind_param('s', $sample);
-    $stmt2->execute();
-    if ($stmt2->get_result()->fetch_assoc()) return true;
-
-    $stmt3 = $this->db->prepare('SELECT id FROM dna_tests WHERE sample_number = ? AND deleted_at IS NULL');
-    $stmt3->bind_param('s', $sample);
-    $stmt3->execute();
-    return (bool) $stmt3->get_result()->fetch_assoc();
-  }
-
   public function search(string $query, int $limit = 5): array
   {
     $like = "%{$query}%";
@@ -188,7 +192,7 @@ class Individual extends Model
   public function softDelete(int $id): bool
   {
     $stmt = $this->db->prepare(
-      'UPDATE individuals SET deleted_at = NOW(), national_id = NULL, dna_sample_number = NULL WHERE id = ?'
+      'UPDATE individuals SET deleted_at = NOW(), national_id = NULL WHERE id = ?'
     );
     $stmt->bind_param('i', $id);
     return $stmt->execute();
@@ -197,8 +201,9 @@ class Individual extends Model
   public function getAllForReport(): array
   {
     $stmt = $this->db->prepare(
-      'SELECT i.id, i.name, i.national_id, i.dna_sample_number, i.blood_type,
-       i.birth_date, i.gender, i.status, f.family_name, u.name as created_by_name, i.created_at
+      'SELECT i.id, i.name, i.national_id, i.blood_type,
+       i.birth_date, i.gender, i.status, f.family_name, u.name as created_by_name, i.created_at,
+       i.D3S1358_1, i.D3S1358_2, i.vWA_1, i.vWA_2, i.FGA_1, i.FGA_2, i.D8S1179_1, i.D8S1179_2, i.D21S11_1, i.D21S11_2
        FROM individuals i
        LEFT JOIN families f ON f.id = i.family_id
        LEFT JOIN users u ON u.id = i.created_by
