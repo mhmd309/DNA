@@ -75,46 +75,46 @@ if (!empty($t['family_name'])) {
           <tr>
             <td class="px-3 py-2 text-center font-medium">D3S1358</td>
             <td class="px-3 py-2">
-              <input type="text" name="D3S1358_1" value="<?= e($t['D3S1358_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 15">
+              <input type="text" name="D3S1358_1" value="<?= e($t['D3S1358_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 15">
             </td>
             <td class="px-3 py-2">
-              <input type="text" name="D3S1358_2" value="<?= e($t['D3S1358_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 17">
+              <input type="text" name="D3S1358_2" value="<?= e($t['D3S1358_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 17">
             </td>
           </tr>
           <tr>
             <td class="px-3 py-2 text-center font-medium">vWA</td>
             <td class="px-3 py-2">
-              <input type="text" name="vWA_1" value="<?= e($t['vWA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 16">
+              <input type="text" name="vWA_1" value="<?= e($t['vWA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 16">
             </td>
             <td class="px-3 py-2">
-              <input type="text" name="vWA_2" value="<?= e($t['vWA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 18">
+              <input type="text" name="vWA_2" value="<?= e($t['vWA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 18">
             </td>
           </tr>
           <tr>
             <td class="px-3 py-2 text-center font-medium">FGA</td>
             <td class="px-3 py-2">
-              <input type="text" name="FGA_1" value="<?= e($t['FGA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 22">
+              <input type="text" name="FGA_1" value="<?= e($t['FGA_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 22">
             </td>
             <td class="px-3 py-2">
-              <input type="text" name="FGA_2" value="<?= e($t['FGA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 24">
+              <input type="text" name="FGA_2" value="<?= e($t['FGA_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 24">
             </td>
           </tr>
           <tr>
             <td class="px-3 py-2 text-center font-medium">D8S1179</td>
             <td class="px-3 py-2">
-              <input type="text" name="D8S1179_1" value="<?= e($t['D8S1179_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 12">
+              <input type="text" name="D8S1179_1" value="<?= e($t['D8S1179_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 12">
             </td>
             <td class="px-3 py-2">
-              <input type="text" name="D8S1179_2" value="<?= e($t['D8S1179_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 13">
+              <input type="text" name="D8S1179_2" value="<?= e($t['D8S1179_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 13">
             </td>
           </tr>
           <tr>
             <td class="px-3 py-2 text-center font-medium">D21S11</td>
             <td class="px-3 py-2">
-              <input type="text" name="D21S11_1" value="<?= e($t['D21S11_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 29">
+              <input type="text" name="D21S11_1" value="<?= e($t['D21S11_1'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 29">
             </td>
             <td class="px-3 py-2">
-              <input type="text" name="D21S11_2" value="<?= e($t['D21S11_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono" placeholder="مثلاً: 31">
+              <input type="text" name="D21S11_2" value="<?= e($t['D21S11_2'] ?? '') ?>" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-center font-mono dark:text-white dark:bg-gray-700/50" placeholder="مثلاً: 31">
             </td>
           </tr>
         </tbody>
