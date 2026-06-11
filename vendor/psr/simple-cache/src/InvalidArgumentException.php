@@ -8,6 +8,4 @@ namespace Psr\SimpleCache;
  * When an invalid argument is passed it must throw an exception which implements
  * this interface
  */
-interface InvalidArgumentException extends CacheException
-{
-}
+interface InvalidArgumentException extends CacheException {}
