@@ -125,7 +125,7 @@ require_once dirname(__DIR__) . '/init.php';
           <tr>
             <th class="px-4 py-3 text-center font-semibold">الترتيب</th>
             <th class="px-4 py-3 text-center font-semibold">الاسم</th>
-            <th class="px-4 py-3 text-center font-semibold">الجنس / الدور</th>
+            <th class="px-4 py-3 text-center font-semibold">الدور</th>
             <th class="px-4 py-3 text-center font-semibold">العائلة</th>
             <th class="px-4 py-3 text-center font-semibold">نسبة التطابق</th>
             <th class="px-4 py-3 text-center font-semibold">العلامات المتطابقة</th>

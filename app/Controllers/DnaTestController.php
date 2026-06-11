@@ -68,6 +68,7 @@ class DnaTestController extends Controller
 
   public function edit(string $id): void
   {
+    Auth::requirePermission('dna.edit');
     $test = $this->model->findWithDetails((int) $id);
     if (!$test) {
       $this->redirect('dna-tests');
@@ -81,6 +82,7 @@ class DnaTestController extends Controller
 
   public function update(string $id): void
   {
+    Auth::requirePermission('dna.edit');
     $testId = (int) $id;
     $existing = $this->model->find($testId);
     if (!$existing) {
@@ -102,6 +104,7 @@ class DnaTestController extends Controller
 
   public function delete(string $id): void
   {
+    Auth::requirePermission('dna.delete');
     $test = $this->model->find((int) $id);
     if (!$test) {
       $this->json(['success' => false, 'message' => 'الفحص غير موجود'], 404);

@@ -14,8 +14,8 @@ require_once dirname(__DIR__) . '/init.php';
 
   <div class="glass-card relative w-full max-w-md rounded-2xl shadow-2xl p-8 border border-white/20">
     <div class="text-center mb-8">
-      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
-        <i class="fas fa-dna text-2xl"></i>
+      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white shadow-lg overflow-hidden">
+        <img src="<?= $baseUrl ?>/public/dnalogofavicon.jpg" alt="Logo" class="w-full h-full object-cover">
       </div>
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">نظام إدارة DNA</h1>
       <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">تسجيل الدخول للمتابعة</p>
@@ -46,8 +46,11 @@ require_once dirname(__DIR__) . '/init.php';
       </div>
 
       <div class="flex items-center justify-between">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" name="remember" value="1" class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <div class="switch">
+            <input type="checkbox" name="remember" value="1">
+            <span class="slider"></span>
+          </div>
           <span class="text-sm text-gray-600 dark:text-gray-400">تذكرني</span>
         </label>
       </div>

@@ -41,12 +41,14 @@ $roles = ['admin' => 'مدير النظام', 'manager' => 'مدير', 'data_ent
         </select>
       </div>
       <?php if ($isEdit): ?>
-        <div>
-          <label class="block text-sm font-medium mb-1">الحالة</label>
-          <select name="is_active" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50">
-            <option value="1" <?= ($u['is_active'] ?? 1) ? 'selected' : '' ?>>نشط</option>
-            <option value="0" <?= !($u['is_active'] ?? 1) ? 'selected' : '' ?>>معطل</option>
-          </select>
+        <div class="sm:col-span-2">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <div class="switch">
+              <input type="checkbox" name="is_active" value="1" <?= ($u['is_active'] ?? 1) ? 'checked' : '' ?>>
+              <span class="slider"></span>
+            </div>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">الحساب نشط</span>
+          </label>
         </div>
       <?php endif; ?>
     </div>

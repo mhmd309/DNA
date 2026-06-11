@@ -60,6 +60,7 @@ class UserController extends Controller
 
   public function edit(string $id): void
   {
+    Auth::requirePermission('users.edit');
     $userData = $this->model->find((int) $id);
     if (!$userData) {
       $this->redirect('users');
@@ -74,6 +75,7 @@ class UserController extends Controller
 
   public function update(string $id): void
   {
+    Auth::requirePermission('users.edit');
     $userId = (int) $id;
     $existing = $this->model->find($userId);
     if (!$existing) {
@@ -102,6 +104,7 @@ class UserController extends Controller
 
   public function delete(string $id): void
   {
+    Auth::requirePermission('users.delete');
     $userId = (int) $id;
     if ($userId === Auth::id()) {
       $this->json(['success' => false, 'message' => 'لا يمكنك حذف حسابك'], 403);

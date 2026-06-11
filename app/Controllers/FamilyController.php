@@ -98,6 +98,7 @@ class FamilyController extends Controller
 
   public function edit(string $id): void
   {
+    Auth::requirePermission('families.edit');
     $family = $this->model->getWithMembers((int) $id);
     if (!$family) {
       $this->redirect('families');
@@ -111,6 +112,7 @@ class FamilyController extends Controller
 
   public function update(string $id): void
   {
+    Auth::requirePermission('families.edit');
     $familyId = (int) $id;
     $existing = $this->model->getWithMembers($familyId);
     if (!$existing) {
@@ -137,6 +139,7 @@ class FamilyController extends Controller
 
   public function delete(string $id): void
   {
+    Auth::requirePermission('families.delete');
     $family = $this->model->find((int) $id);
     if (!$family) {
       $this->json(['success' => false, 'message' => 'العائلة غير موجودة'], 404);

@@ -72,6 +72,7 @@ class IndividualController extends Controller
 
   public function edit(string $id): void
   {
+    Auth::requirePermission('individuals.edit');
     $individual = $this->model->findWithFamily((int) $id);
     if (!$individual) {
       $this->redirect('individuals');
@@ -86,6 +87,7 @@ class IndividualController extends Controller
 
   public function update(string $id): void
   {
+    Auth::requirePermission('individuals.edit');
     $individualId = (int) $id;
     $existing = $this->model->find($individualId);
     if (!$existing) {
@@ -114,6 +116,7 @@ class IndividualController extends Controller
 
   public function delete(string $id): void
   {
+    Auth::requirePermission('individuals.delete');
     $individual = $this->model->find((int) $id);
     if (!$individual) {
       $this->json(['success' => false, 'message' => 'الفرد غير موجود'], 404);

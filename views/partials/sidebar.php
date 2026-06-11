@@ -9,8 +9,8 @@ require_once dirname(__DIR__) . '/init.php';
 <aside id="sidebar" class="fixed top-0 right-0 w-64 h-full bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 z-40 transform transition-transform duration-300 translate-x-0 flex flex-col">
 
   <div class="flex items-center gap-3 h-16 px-4 border-b border-gray-200 dark:border-gray-700">
-    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white">
-      <i class="fas fa-dna text-lg"></i>
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white overflow-hidden">
+      <img src="<?= $baseUrl ?>/public/dnalogofavicon.jpg" alt="Logo" class="w-full h-full object-cover rounded-xl">
     </div>
     <div>
       <div class="font-bold text-sm">نظام DNA</div>
@@ -55,6 +55,9 @@ require_once dirname(__DIR__) . '/init.php';
 
     <a href="<?= $baseUrl ?>/reports" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
       <i class="fas fa-chart-line w-5"></i> التقارير
+    </a>
+    <a href="<?= $baseUrl ?>/user-guide.html" target="_blank" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
+      <i class="fas fa-book w-5"></i> دليل المستخدم
     </a>
     </div>
 
