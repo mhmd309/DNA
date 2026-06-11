@@ -199,10 +199,12 @@ class DnaTestController extends Controller
 
         foreach ($familyParents as $parent) {
           $match = calculateDnaMatch($selectedTest, $parent);
-          $results[] = [
-            'parent' => $parent,
-            'match' => $match,
-          ];
+          if ($match['percentage'] >= 80) {
+            $results[] = [
+              'parent' => $parent,
+              'match' => $match,
+            ];
+          }
         }
 
         usort($results, function ($a, $b) {

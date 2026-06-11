@@ -439,4 +439,59 @@ class Family extends Model
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }
+
+  public function upsertChildFromIndividual(array $data): void
+  {
+    if (empty($data['family_id'])) {
+      return;
+    }
+
+    $familyId = (int) $data['family_id'];
+    $nationalId = $data['national_id'] ?? null;
+    $phone = $data['phone'] ?? null;
+
+    // Check if child exists
+    $stmt = $this->db->prepare("
+      SELECT id FROM family_members 
+      WHERE family_id = ? AND role = 'child' 
+      AND (national_id = ? OR phone = ?) 
+      AND deleted_at IS NULL
+    ");
+    $stmt->bind_param('iss', $familyId, $nationalId, $phone);
+    $stmt->execute();
+    $existing = $stmt->get_result()->fetch_assoc();
+
+    if ($existing) {
+      // Update existing child
+      $this->updateMember($familyId, (int) $existing['id'], 'child', $data, 0);
+    } else {
+      // Insert new child
+      $this->insertMember($familyId, 'child', $data, 0);
+    }
+  }
+
+  public function softDeleteChildByIdentifiers(int $familyId, ?string $nationalId = null, ?string $phone = null): void
+  {
+    $sql = "UPDATE family_members 
+            SET deleted_at = NOW(), national_id = NULL, phone = NULL 
+            WHERE family_id = ? AND role = 'child'";
+    $params = [$familyId];
+    $types = 'i';
+
+    if ($nationalId !== null) {
+      $sql .= " AND national_id = ?";
+      $params[] = $nationalId;
+      $types .= 's';
+    }
+
+    if ($phone !== null) {
+      $sql .= " AND phone = ?";
+      $params[] = $phone;
+      $types .= 's';
+    }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+  }
 }
