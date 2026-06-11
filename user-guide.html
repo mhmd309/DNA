@@ -38,27 +38,21 @@
     .step-number {
       background: linear-gradient(135deg, #6367FF 0%, #4D51E6 100%);
     }
-    
     .whatsapp-float {
       position: fixed;
       bottom: 20px;
-      left: 20px;
-      background: #25d366;
-      color: white;
-      border-radius: 50%;
+      right: 20px;
+      z-index: 999;
+      background-color: #6367FF;
+      color: #fff;
       width: 60px;
       height: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-      transition: transform 0.3s ease;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       text-decoration: none;
-    }
-    .whatsapp-float:hover {
-      transform: scale(1.1);
-      color: white;
     }
   </style>
 </head>
@@ -67,7 +61,8 @@
   <div class="max-w-4xl mx-auto py-12 px-4">
     <!-- Header -->
     <div class="text-center mb-12">
-      <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 mx-auto flex items-center justify-center mb-6 overflow-hidden">
+      <div
+        class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 mx-auto flex items-center justify-center mb-6 overflow-hidden">
         <img src="public/dnalogofavicon.jpg" alt="Logo" class="w-20 h-20 rounded-full object-cover">
       </div>
       <h1 class="text-4xl font-bold mb-4 text-primary-800">دليل استخدام نظام إدارة اختبارات الحمض النووي (DNA)</h1>
@@ -79,12 +74,15 @@
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-list text-primary-600"></i> محتويات
         الدليل</h2>
       <ol class="space-y-3 text-lg">
-        <li class="hover:text-primary-600 cursor-pointer transition"><a href="#login">1. تسجيل الدخول إلى النظام</a></li>
+        <li class="hover:text-primary-600 cursor-pointer transition"><a href="#login">1. تسجيل الدخول إلى النظام</a>
+        </li>
         <li class="hover:text-primary-600 cursor-pointer transition"><a href="#families">2. إدارة العائلات</a></li>
         <li class="hover:text-primary-600 cursor-pointer transition"><a href="#individuals">3. إدارة الأفراد</a></li>
-        <li class="hover:text-primary-600 cursor-pointer transition"><a href="#dna-tests">4. إدارة اختبارات الحمض النووي</a>
+        <li class="hover:text-primary-600 cursor-pointer transition"><a href="#dna-tests">4. إدارة اختبارات الحمض
+            النووي</a>
         </li>
-        <li class="hover:text-primary-600 cursor-pointer transition"><a href="#comparison">5. مقارنة الحمض النووي</a></li>
+        <li class="hover:text-primary-600 cursor-pointer transition"><a href="#comparison">5. مقارنة الحمض النووي</a>
+        </li>
         <li class="hover:text-primary-600 cursor-pointer transition"><a href="#reports">6. التقارير</a></li>
       </ol>
     </div>
@@ -125,7 +123,8 @@
         <h2 class="text-3xl font-bold text-primary-800">إدارة العائلات</h2>
       </div>
       <div class="mb-8">
-        <h3 class="text-xl font-semibold mb-4 text-primary-700"><i class="fas fa-plus-circle"></i> إضافة عائلة جديدة</h3>
+        <h3 class="text-xl font-semibold mb-4 text-primary-700"><i class="fas fa-plus-circle"></i> إضافة عائلة جديدة
+        </h3>
         <ol class="space-y-4 text-lg">
           <li class="flex items-start gap-3">
             <i class="fas fa-check-circle text-green-500 mt-1"></i>
@@ -141,7 +140,8 @@
           </li>
           <li class="flex items-start gap-3">
             <i class="fas fa-check-circle text-green-500 mt-1"></i>
-            <span>أدخل بيانات الأب (الاسم، رقم الهوية، فصيلة الدم، رقم الهاتف، تاريخ الميلاد، العنوان، صورة البطاقة)</span>
+            <span>أدخل بيانات الأب (الاسم، رقم الهوية، فصيلة الدم، رقم الهاتف، تاريخ الميلاد، العنوان، صورة
+              البطاقة)</span>
           </li>
           <li class="flex items-start gap-3">
             <i class="fas fa-check-circle text-green-500 mt-1"></i>
@@ -149,7 +149,8 @@
           </li>
           <li class="flex items-start gap-3">
             <i class="fas fa-check-circle text-green-500 mt-1"></i>
-            <span>أدخل بيانات الأم (الاسم، رقم الهوية، فصيلة الدم، رقم الهاتف، تاريخ الميلاد، العنوان، صورة البطاقة)</span>
+            <span>أدخل بيانات الأم (الاسم، رقم الهوية، فصيلة الدم، رقم الهاتف، تاريخ الميلاد، العنوان، صورة
+              البطاقة)</span>
           </li>
           <li class="flex items-start gap-3">
             <i class="fas fa-check-circle text-green-500 mt-1"></i>
@@ -285,7 +286,8 @@
         </li>
       </ol>
       <div class="mt-6 bg-primary-50 border border-primary-200 rounded-xl p-4">
-        <h3 class="font-semibold text-primary-800 mb-2 flex items-center gap-2"><i class="fas fa-lightbulb"></i> كيف تقرأ
+        <h3 class="font-semibold text-primary-800 mb-2 flex items-center gap-2"><i class="fas fa-lightbulb"></i> كيف
+          تقرأ
           النتائج؟</h3>
         <ul class="list-disc list-inside space-y-2 text-lg">
           <li>النسب العالية (أكثر من 80%) تشير إلى احتمالية كبيرة للقرابة</li>
@@ -326,7 +328,8 @@
 
     <!-- Tips Section -->
     <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl border border-primary-200 p-8 mb-8">
-      <h2 class="text-2xl font-bold mb-6 text-primary-800 flex items-center gap-2"><i class="fas fa-star"></i> نصائح مهمة
+      <h2 class="text-2xl font-bold mb-6 text-primary-800 flex items-center gap-2"><i class="fas fa-star"></i> نصائح
+        مهمة
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
@@ -350,18 +353,14 @@
 
     <!-- Footer -->
     <div class="text-center py-8 text-gray-600 border-t border-gray-200">
-      <p class="text-lg mb-2">بالتوفيق في استخدام النظام!</p>
-      <p class="text-sm mb-4">إذا واجهت أي مشكلة، تواصل معنا:</p>
-      <a href="https://wa.me/201024704900" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-[#25d366] text-white rounded-xl hover:bg-[#128c7e] transition">
-        <i class="fab fa-whatsapp text-xl"></i>
-        <span>تواصل على الواتساب</span>
+      <p class="text-lg">بالتوفيق في استخدام النظام!</p>
+      <p class="text-sm mt-2">إذا واجهت أي مشكلة، تواصل مع دعم الفني</p>
+      <!-- Floating WhatsApp Button -->
+      <a href="https://wa.me/201024704900" target="_blank" class="whatsapp-float" title="تواصل معنا">
+        <i class="fab fa-whatsapp text-3xl"></i>
       </a>
     </div>
   </div>
-  
-  <!-- Floating WhatsApp Button -->
-  <a href="https://wa.me/201024704900" target="_blank" class="whatsapp-float" title="تواصل على الواتساب">
-    <i class="fab fa-whatsapp text-3xl"></i>
-  </a>
 </body>
+
 </html>

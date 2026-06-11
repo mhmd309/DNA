@@ -59,16 +59,7 @@ require_once dirname(__DIR__) . '/init.php';
         <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
       </button>
     </form>
-
     <p class="text-center text-xs text-gray-400 mt-6">admin@dna.com / Admin@123</p>
-    
-    <div class="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-      <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">تحتاج مساعدة؟ تواصل معنا</p>
-      <a href="https://wa.me/201024704900" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-[#25d366] text-white rounded-xl hover:bg-[#128c7e] transition">
-        <i class="fab fa-whatsapp text-xl"></i>
-        <span>تواصل على الواتساب</span>
-      </a>
-    </div>
   </div>
 </div>
 

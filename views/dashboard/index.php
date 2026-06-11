@@ -61,26 +61,28 @@ require_once dirname(__DIR__) . '/init.php';
 </div>
 
 <!-- Quick Links -->
-<div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-  <h3 class="text-lg font-bold mb-4"><i class="fas fa-bolt text-amber-500 ml-2"></i>روابط سريعة</h3>
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-    <?php
-    $links = [
-      ['url' => '/families/create', 'label' => 'إضافة عائلة', 'icon' => 'fa-people-roof', 'perm' => 'families.create'],
-      ['url' => '/individuals/create', 'label' => 'إضافة فرد', 'icon' => 'fa-user-plus', 'perm' => 'individuals.create'],
-      ['url' => '/dna-tests/create', 'label' => 'إضافة فحص DNA', 'icon' => 'fa-dna', 'perm' => 'dna.create'],
-      ['url' => '/individuals/create?status=missing', 'label' => 'إضافة مفقود', 'icon' => 'fa-person-walking', 'perm' => 'individuals.create'],
-      ['url' => '/individuals/create?status=unidentified', 'label' => 'مجهول هوية', 'icon' => 'fa-user-secret', 'perm' => 'individuals.create'],
-      ['url' => '/individuals/create?status=deceased', 'label' => 'إضافة متوفى', 'icon' => 'fa-user-minus', 'perm' => 'individuals.create'],
-      ['url' => '/users/create', 'label' => 'إضافة مستخدم', 'icon' => 'fa-user-shield', 'perm' => 'users.create'],
-    ];
-    foreach ($links as $link):
-      if (!can($link['perm'])) continue;
-    ?>
-      <a href="<?= $baseUrl . $link['url'] ?>" class="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/10 transition text-center">
-        <i class="fas <?= $link['icon'] ?> text-xl text-primary-600 dark:text-primary-400"></i>
-        <span class="text-sm font-medium"><?= $link['label'] ?></span>
-      </a>
-    <?php endforeach; ?>
+<?php if (isset($user['role']) && $user['role'] !== 'viewer'): ?>
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+    <h3 class="text-lg font-bold mb-4"><i class="fas fa-bolt text-amber-500 ml-2"></i>روابط سريعة</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <?php
+      $links = [
+        ['url' => '/families/create', 'label' => 'إضافة عائلة', 'icon' => 'fa-people-roof', 'perm' => 'families.create'],
+        ['url' => '/individuals/create', 'label' => 'إضافة فرد', 'icon' => 'fa-user-plus', 'perm' => 'individuals.create'],
+        ['url' => '/dna-tests/create', 'label' => 'إضافة فحص DNA', 'icon' => 'fa-dna', 'perm' => 'dna.create'],
+        ['url' => '/individuals/create?status=missing', 'label' => 'إضافة مفقود', 'icon' => 'fa-person-walking', 'perm' => 'individuals.create'],
+        ['url' => '/individuals/create?status=unidentified', 'label' => 'مجهول هوية', 'icon' => 'fa-user-secret', 'perm' => 'individuals.create'],
+        ['url' => '/individuals/create?status=deceased', 'label' => 'إضافة متوفى', 'icon' => 'fa-user-minus', 'perm' => 'individuals.create'],
+        ['url' => '/users/create', 'label' => 'إضافة مستخدم', 'icon' => 'fa-user-shield', 'perm' => 'users.create'],
+      ];
+      foreach ($links as $link):
+        if (!can($link['perm'])) continue;
+      ?>
+        <a href="<?= $baseUrl . $link['url'] ?>" class="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/10 transition text-center">
+          <i class="fas <?= $link['icon'] ?> text-xl text-primary-600 dark:text-primary-400"></i>
+          <span class="text-sm font-medium"><?= $link['label'] ?></span>
+        </a>
+      <?php endforeach; ?>
+    </div>
   </div>
-</div>
+<?php endif; ?>
