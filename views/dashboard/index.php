@@ -11,6 +11,16 @@ require_once dirname(__DIR__) . '/init.php';
 ?>
 <div class="mb-8">
   <h1 class="text-2xl font-bold mb-2">لوحة التحكم</h1>
+  <?php if ($user): ?>
+    <div class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+      <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+        <i class="fas fa-user text-primary-600 dark:text-primary-400"></i>
+      </div>
+      <div>
+        <p class="text-sm">نوع الحساب: <strong style="color: #3b82f6"><?= e($user['role'] === 'admin' ? 'مدير النظام' : ($user['role'] === 'editor' ? 'إدخال البيانات' : 'رؤية السجلات فقط')) ?></strong></p>
+      </div>
+    </div>
+  <?php endif; ?>
 </div>
 
 <!-- Intro -->

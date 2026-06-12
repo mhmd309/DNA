@@ -50,11 +50,6 @@ require_once dirname(__DIR__) . '/init.php';
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
   <?= $content ?>
   <script src="<?= $baseUrl ?>/public/assets/js/app.js"></script>
-  
-  <!-- Floating WhatsApp Button -->
-  <a href="https://wa.me/201024704900" target="_blank" class="whatsapp-float" title="تواصل معنا">
-    <i class="fab fa-whatsapp text-3xl"></i>
-  </a>
 </body>
 
 </html>

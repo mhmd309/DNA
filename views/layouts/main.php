@@ -67,11 +67,6 @@ require_once dirname(__DIR__) . '/init.php';
 
   <script src="<?= $baseUrl ?>/public/assets/js/app.js"></script>
   <?php if ($scripts !== ''): ?><?= $scripts ?><?php endif; ?>
-  
-  <!-- Floating WhatsApp Button -->
-  <a href="https://wa.me/201024704900" target="_blank" class="whatsapp-float" title="تواصل معنا">
-    <i class="fab fa-whatsapp text-3xl"></i>
-  </a>
 </body>
 
 </html>

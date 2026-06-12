@@ -40,7 +40,9 @@ require_once dirname(__DIR__) . '/init.php';
           <th class="px-4 py-3 text-center font-semibold">البريد</th>
           <th class="px-4 py-3 text-center font-semibold">الدور</th>
           <th class="px-4 py-3 text-center font-semibold">الحالة</th>
-          <th class="px-4 py-3 text-center font-semibold">الإجراءات</th>
+          <?php if (can('users.edit') || can('users.delete')): ?>
+            <th class="px-4 py-3 text-center font-semibold">الإجراءات</th>
+          <?php endif; ?>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700 text-center">
@@ -64,16 +66,19 @@ require_once dirname(__DIR__) . '/init.php';
                   <span class="text-red-600 text-xs">معطل</span>
                 <?php endif; ?>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex justify-center items-center gap-2">
-                  <?php if (can('users.edit')): ?>
-                    <a href="<?= $baseUrl ?>/users/edit/<?= $row['id'] ?>" class="action-btn action-btn-edit" title="تعديل"><i class="fas fa-edit"></i></a>
-                  <?php endif; ?>
-                  <?php if (can('users.delete') && $row['id'] != ($user['id'] ?? 0)): ?>
-                    <button data-delete="<?= $baseUrl ?>/users/delete/<?= $row['id'] ?>" data-name="<?= e($row['name']) ?>" class="action-btn action-btn-delete" title="حذف"><i class="fas fa-trash"></i></button>
-                  <?php endif; ?>
-                </div>
-              </td>
+              <!-- hide permission to edit or permission to delete any user -->
+              <?php if (can('users.edit') || can('users.delete')): ?>
+                <td class="px-4 py-3">
+                  <div class="flex justify-center items-center gap-2">
+                    <?php if (can('users.edit')): ?>
+                      <a href="<?= $baseUrl ?>/users/edit/<?= $row['id'] ?>" class="action-btn action-btn-edit" title="تعديل"><i class="fas fa-edit"></i></a>
+                    <?php endif; ?>
+                    <?php if (can('users.delete') && $row['id'] != ($user['id'] ?? 0)): ?>
+                      <button data-delete="<?= $baseUrl ?>/users/delete/<?= $row['id'] ?>" data-name="<?= e($row['name']) ?>" class="action-btn action-btn-delete" title="حذف"><i class="fas fa-trash"></i></button>
+                    <?php endif; ?>
+                  </div>
+                </td>
+              <?php endif; ?>
             </tr>
           <?php endforeach; ?>
         <?php endif; ?>
