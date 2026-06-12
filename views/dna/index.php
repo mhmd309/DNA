@@ -57,13 +57,13 @@ require_once dirname(__DIR__) . '/init.php';
               <td class="px-4 py-3"><?= statusBadge($row['status']) ?></td>
               <td class="px-4 py-3 hidden md:table-cell text-xs"><?= e(formatDateTime($row['created_at'])) ?></td>
               <td class="px-4 py-3">
-                <div class="flex justify-center items-center gap-1">
-                  <a href="<?= $baseUrl ?>/dna-tests/show/<?= $row['id'] ?>" class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600"><i class="fas fa-eye"></i></a>
+                <div class="flex justify-center items-center gap-2">
+                  <a href="<?= $baseUrl ?>/dna-tests/show/<?= $row['id'] ?>" class="action-btn action-btn-view" title="عرض"><i class="fas fa-eye"></i></a>
                   <?php if (can('dna.edit')): ?>
-                    <a href="<?= $baseUrl ?>/dna-tests/edit/<?= $row['id'] ?>" class="p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600"><i class="fas fa-edit"></i></a>
+                    <a href="<?= $baseUrl ?>/dna-tests/edit/<?= $row['id'] ?>" class="action-btn action-btn-edit" title="تعديل"><i class="fas fa-edit"></i></a>
                   <?php endif; ?>
                   <?php if (can('dna.delete')): ?>
-                    <button data-delete="<?= $baseUrl ?>/dna-tests/delete/<?= $row['id'] ?>" data-name="<?= e($row['person_name']) ?>" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600"><i class="fas fa-trash"></i></button>
+                    <button data-delete="<?= $baseUrl ?>/dna-tests/delete/<?= $row['id'] ?>" data-name="<?= e($row['person_name']) ?>" class="action-btn action-btn-delete" title="حذف"><i class="fas fa-trash"></i></button>
                   <?php endif; ?>
                 </div>
               </td>

@@ -144,7 +144,8 @@ class Family extends Model
           $submittedChildIds[] = $childId;
           $this->updateMember($id, $childId, 'child', $child, $i);
         } else {
-          $this->insertMember($id, 'child', $child, $i);
+          $newId = $this->insertMember($id, 'child', $child, $i);
+          $submittedChildIds[] = $newId;
         }
       }
 
@@ -157,7 +158,7 @@ class Family extends Model
     }
   }
 
-  private function insertMember(int $familyId, string $role, array $data, int $sortOrder): void
+  private function insertMember(int $familyId, string $role, array $data, int $sortOrder): int
   {
     $name = $data['name'];
     $nationalId = !empty($data['national_id']) ? $data['national_id'] : null;
@@ -207,6 +208,7 @@ class Family extends Model
       $d21s11_2
     );
     $stmt->execute();
+    return $this->db->lastInsertId();
   }
 
   private function updateMember(int $familyId, int $memberId, string $role, array $data, int $sortOrder): void

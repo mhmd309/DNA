@@ -134,6 +134,22 @@ async function removeChild(btn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize childIndex based on existing children count from PHP
+  const container = document.getElementById('childrenContainer');
+  if (container) {
+    // Wait for any initial addChild calls (from PHP) to finish
+    setTimeout(() => {
+      const existingRows = container.querySelectorAll('.child-row');
+      if (existingRows.length > 0) {
+        const maxIndex = Array.from(existingRows).reduce((max, row) => {
+          const idx = parseInt(row.dataset.index, 10);
+          return isNaN(idx) ? max : Math.max(max, idx);
+        }, -1);
+        childIndex = maxIndex + 1;
+      }
+    }, 100);
+  }
+
   document.getElementById('addChildBtn')?.addEventListener('click', () => addChild());
 
   document.querySelectorAll('[data-age-calc]').forEach(input => {

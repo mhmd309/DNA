@@ -65,12 +65,12 @@ require_once dirname(__DIR__) . '/init.php';
                 <?php endif; ?>
               </td>
               <td class="px-4 py-3">
-                <div class="flex justify-center items-center gap-1">
+                <div class="flex justify-center items-center gap-2">
                   <?php if (can('users.edit')): ?>
-                    <a href="<?= $baseUrl ?>/users/edit/<?= $row['id'] ?>" class="p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600"><i class="fas fa-edit"></i></a>
+                    <a href="<?= $baseUrl ?>/users/edit/<?= $row['id'] ?>" class="action-btn action-btn-edit" title="تعديل"><i class="fas fa-edit"></i></a>
                   <?php endif; ?>
                   <?php if (can('users.delete') && $row['id'] != ($user['id'] ?? 0)): ?>
-                    <button data-delete="<?= $baseUrl ?>/users/delete/<?= $row['id'] ?>" data-name="<?= e($row['name']) ?>" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600"><i class="fas fa-trash"></i></button>
+                    <button data-delete="<?= $baseUrl ?>/users/delete/<?= $row['id'] ?>" data-name="<?= e($row['name']) ?>" class="action-btn action-btn-delete" title="حذف"><i class="fas fa-trash"></i></button>
                   <?php endif; ?>
                 </div>
               </td>

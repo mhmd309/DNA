@@ -63,13 +63,13 @@ require_once dirname(__DIR__) . '/init.php';
               <td class="px-4 py-3 hidden xl:table-cell font-mono text-xs"><?= e($row['mother_national_id'] ?? '-') ?></td>
               <td class="px-4 py-3 text-center"><span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full text-xs"><?= nf((int)$row['children_count']) ?></span></td>
               <td class="px-4 py-3">
-                <div class="flex justify-center items-center gap-1">
-                  <a href="<?= $baseUrl ?>/families/show/<?= $row['id'] ?>" class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600" title="عرض"><i class="fas fa-eye"></i></a>
+                <div class="flex justify-center items-center gap-2">
+                  <a href="<?= $baseUrl ?>/families/show/<?= $row['id'] ?>" class="action-btn action-btn-view" title="عرض"><i class="fas fa-eye"></i></a>
                   <?php if (can('families.edit')): ?>
-                    <a href="<?= $baseUrl ?>/families/edit/<?= $row['id'] ?>" class="p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600" title="تعديل"><i class="fas fa-edit"></i></a>
+                    <a href="<?= $baseUrl ?>/families/edit/<?= $row['id'] ?>" class="action-btn action-btn-edit" title="تعديل"><i class="fas fa-edit"></i></a>
                   <?php endif; ?>
                   <?php if (can('families.delete')): ?>
-                    <button data-delete="<?= $baseUrl ?>/families/delete/<?= $row['id'] ?>" data-name="<?= e($row['family_name']) ?>" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600" title="حذف"><i class="fas fa-trash"></i></button>
+                    <button data-delete="<?= $baseUrl ?>/families/delete/<?= $row['id'] ?>" data-name="<?= e($row['family_name']) ?>" class="action-btn action-btn-delete" title="حذف"><i class="fas fa-trash"></i></button>
                   <?php endif; ?>
                 </div>
               </td>

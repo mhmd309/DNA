@@ -440,3 +440,71 @@ input:checked + .slider:before {
   transform: scale(1.1);
   color: white;
 }
+
+/* Table Action Buttons */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.action-btn-view {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+.action-btn-view:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+.dark .action-btn-view {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+.dark .action-btn-view:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.action-btn-edit {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+.action-btn-edit:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.dark .action-btn-edit {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.dark .action-btn-edit:hover {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.action-btn-delete {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.action-btn-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.dark .action-btn-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+.dark .action-btn-delete:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.35);
+}
