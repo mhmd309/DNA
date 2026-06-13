@@ -144,7 +144,6 @@ if (!empty($ind['family_name'])) {
   </div>
 </form>
 
-<script src="<?= $baseUrl ?>/public/assets/js/searchable-select.js"></script>
 <script>
   document.getElementById('individualForm').addEventListener('submit', e => {
     e.preventDefault();

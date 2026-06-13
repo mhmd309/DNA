@@ -143,7 +143,6 @@ if (!empty($t['family_name'])) {
   </div>
 </form>
 
-<script src="<?= $baseUrl ?>/public/assets/js/searchable-select.js"></script>
 <script>
   document.getElementById('dnaForm').addEventListener('submit', e => {
     e.preventDefault();

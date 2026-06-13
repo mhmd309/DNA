@@ -217,7 +217,7 @@ const App = {
     document.querySelectorAll('[data-confirm-logout]').forEach(link => {
       link.addEventListener('click', async (e) => {
         e.preventDefault();
-        const ok = await Confirm.show('هل تريد تسجيل الخروج؟');
+        const ok = await Confirm.show('هل تريد تسجيل الخروج؟', 'تسجيل الخروج');
         if (ok) window.location.href = link.getAttribute('href');
       });
     });
@@ -368,7 +368,7 @@ const Toast = {
 };
 
 const Confirm = {
-  show(message) {
+  show(message, yesText = 'نعم، احذف') {
     return new Promise((resolve) => {
       const overlay = document.createElement('div');
       overlay.className = 'fixed inset-0 bg-black/50 z-[10000] flex items-center justify-center p-4';
@@ -381,7 +381,7 @@ const Confirm = {
                         <p class="text-gray-700 dark:text-gray-200">${message}</p>
                     </div>
                     <div class="flex gap-3 justify-center">
-                        <button class="confirm-yes px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition">نعم، احذف</button>
+                        <button class="confirm-yes px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition">${yesText}</button>
                         <button class="confirm-no px-6 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl font-medium transition">إلغاء</button>
                     </div>
                 </div>

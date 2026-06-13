@@ -8,7 +8,7 @@ class SearchableSelect {
     this.selectedText = container.querySelector('.ss-selected-text');
     this.timeout = null;
     this.staticData = null;
-
+    
     // Check for static data
     const dataAttr = container.dataset.static;
     if (dataAttr) {
@@ -26,16 +26,26 @@ class SearchableSelect {
     });
   }
 
+  // Normalize item to have id, text, subtext
+  normalizeItem(item) {
+    return {
+      id: item.id,
+      text: item.text || item.family_name || item.person_name || item.name || '',
+      subtext: item.subtext || item.family_code || item.sample_date || ''
+    };
+  }
+
   search() {
     clearTimeout(this.timeout);
     const q = this.input.value.trim().toLowerCase();
-
+    
     if (this.staticData) {
       // Filter static data locally
       this.timeout = setTimeout(() => {
-        const filtered = this.staticData.filter(item =>
-          item.text.toLowerCase().includes(q) || (item.subtext && item.subtext.toLowerCase().includes(q))
-        );
+        const filtered = this.staticData.filter(item => {
+          const normalized = this.normalizeItem(item);
+          return normalized.text.toLowerCase().includes(q) || normalized.subtext.toLowerCase().includes(q);
+        });
         this.render(filtered);
       }, 100);
     } else if (this.apiUrl) {
@@ -56,13 +66,16 @@ class SearchableSelect {
     if (!items.length) {
       this.dropdown.innerHTML = '<div class="p-3 text-sm text-gray-500 text-center">لا توجد نتائج</div>';
     } else {
-      this.dropdown.innerHTML = items.map(item => `
+      this.dropdown.innerHTML = items.map(item => {
+        const normalized = this.normalizeItem(item);
+        return `
                 <button type="button" class="w-full text-right px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm border-b border-gray-100 dark:border-gray-700 last:border-0 ss-option"
-                    data-id="${item.id}" data-text="${item.text}">
-                    <span class="font-medium">${item.text}</span>
-                    ${item.subtext ? `<span class="text-gray-500 text-xs mr-2">${item.subtext}</span>` : ''}
+                    data-id="${normalized.id}" data-text="${normalized.text}">
+                    <span class="font-medium">${normalized.text}</span>
+                    ${normalized.subtext ? `<span class="text-gray-500 text-xs mr-2">${normalized.subtext}</span>` : ''}
                 </button>
-            `).join('');
+            `;
+      }).join('');
 
       this.dropdown.querySelectorAll('.ss-option').forEach(btn => {
         btn.addEventListener('click', () => {
