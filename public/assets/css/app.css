@@ -453,11 +453,6 @@ input:checked + .slider:before {
   border: 1px solid transparent;
 }
 
-.action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
 .action-btn-view {
   background: rgba(59, 130, 246, 0.1);
   color: #3b82f6;

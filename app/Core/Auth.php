@@ -36,7 +36,7 @@ class Auth
       $stmt = $db->prepare('UPDATE users SET remember_token = ? WHERE id = ?');
       $stmt->bind_param('si', $token, $user['id']);
       $stmt->execute();
-      setcookie(self::REMEMBER_COOKIE, $token, time() + (86400 * 30), '/', '', false, true);
+      setcookie(self::REMEMBER_COOKIE, $token, time() + (86400 * 30), '/DNA', '', false, true);
     }
   }
 
@@ -64,7 +64,7 @@ class Auth
     }
 
     unset($_SESSION[self::SESSION_KEY]);
-    setcookie(self::REMEMBER_COOKIE, '', time() - 3600, '/', '', false, true);
+    setcookie(self::REMEMBER_COOKIE, '', time() - 3600, '/DNA', '', false, true);
     session_destroy();
   }
 
