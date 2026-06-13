@@ -268,11 +268,24 @@ const App = {
     document.querySelectorAll('[data-instant-search]').forEach(form => {
       const input = form.querySelector('input[name="search"]');
       if (!input) return;
-      let timeout;
-      input.addEventListener('input', () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => form.submit(), 400);
+
+      // Submit only on Enter key press or blur
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          form.submit();
+        }
       });
+
+      input.addEventListener('blur', () => {
+        // Only submit if value changed from initial
+        const initialValue = input.dataset.initialValue || '';
+        if (input.value.trim() !== initialValue.trim()) {
+          form.submit();
+        }
+      });
+
+      // Store initial value to avoid unnecessary submits
+      input.dataset.initialValue = input.value;
     });
   },
 
