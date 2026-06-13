@@ -10,6 +10,47 @@ const App = {
     this.initSearchInputs();
     this.initNumericInputs();
     this.initFileInputs();
+    this.initImagePreviews();
+  },
+
+  initImagePreviews() {
+    const popup = document.getElementById('imagePreviewPopup');
+    const previewImg = document.getElementById('previewImage');
+    const closeBtn = document.getElementById('closeImagePreview');
+
+    // Open preview on image or preview container click
+    document.addEventListener('click', (e) => {
+      let src = null;
+      if (e.target.tagName === 'IMG' && e.target.src && e.target.src !== window.location.href) {
+        src = e.target.src;
+      } else if (e.target.closest('[data-preview-image]')) {
+        src = e.target.closest('[data-preview-image]').dataset.previewImage;
+      }
+
+      if (src) {
+        previewImg.src = src;
+        popup.classList.remove('hidden');
+      }
+    });
+
+    // Close preview
+    const closePreview = () => {
+      popup.classList.add('hidden');
+      previewImg.src = '';
+    };
+
+    closeBtn.addEventListener('click', closePreview);
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        closePreview();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !popup.classList.contains('hidden')) {
+        closePreview();
+      }
+    });
   },
 
   initTheme() {

@@ -69,7 +69,6 @@ if (!empty($ind['family_name'])) {
           <input type="hidden" name="family_id" class="ss-hidden" value="<?= e($ind['family_id'] ?? '') ?>">
           <input type="text" class="ss-input w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50" placeholder="ابحث عن عائلة..." value="<?= e($familyText) ?>">
           <div class="ss-dropdown searchable-select-dropdown hidden absolute top-full mt-1 w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50"></div>
-          <p class="ss-selected-text text-xs text-gray-500 mt-1"><?= e($familyText) ?></p>
         </div>
       </div>
     </div>

@@ -160,6 +160,24 @@ class DnaTest extends Model
     return $row['file_path'];
   }
 
+  public function deleteAllAttachments(int $testId): array
+  {
+    $stmt = $this->db->prepare('SELECT file_path FROM dna_test_attachments WHERE dna_test_id = ?');
+    $stmt->bind_param('i', $testId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $filePaths = [];
+    while ($row = $result->fetch_assoc()) {
+      $filePaths[] = $row['file_path'];
+    }
+
+    $del = $this->db->prepare('DELETE FROM dna_test_attachments WHERE dna_test_id = ?');
+    $del->bind_param('i', $testId);
+    $del->execute();
+
+    return $filePaths;
+  }
+
   public function search(string $query, int $limit = 5): array
   {
     $like = "%{$query}%";

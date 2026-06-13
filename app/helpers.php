@@ -161,7 +161,7 @@ function renderMemberCard(?array $member, string $role, string $color): void
       <?php if (!empty($member['id_card_image'])): ?>
         <div class="sm:col-span-2">
           <span class="text-gray-500 block mb-2">صورة البطاقة:</span>
-          <img src="<?= uploadUrl($member['id_card_image']) ?>" alt="بطاقة" class="max-w-xs rounded-lg border border-gray-200 dark:border-gray-600">
+          <img src="<?= uploadUrl($member['id_card_image']) ?>" alt="بطاقة" class="max-w-xs rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:opacity-90 transition">
         </div>
       <?php endif; ?>
     </div>

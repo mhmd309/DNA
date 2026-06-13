@@ -410,17 +410,29 @@ class Family extends Model
 
   public function generateUniqueFamilyCode(): string
   {
-    $prefix = 'FAM';
-    $date = date('Ymd');
-    $attempts = 0;
-
-    do {
-      $random = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-      $code = $prefix . $date . $random;
-      $attempts++;
-    } while ($this->codeExists($code) && $attempts < 100);
-
-    return $code;
+    // Find the highest existing family number
+    $stmt = $this->db->prepare("
+        SELECT family_code 
+        FROM families 
+        WHERE family_code LIKE 'FAM-%' 
+        ORDER BY CAST(SUBSTRING(family_code, 5) AS UNSIGNED) DESC
+        LIMIT 1
+    ");
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    
+    $nextNumber = 1;
+    if ($result && isset($result['family_code'])) {
+        // Extract the number part (after 'FAM-')
+        $lastCode = $result['family_code'];
+        $lastNumber = (int) substr($lastCode, 4);
+        $nextNumber = $lastNumber + 1;
+    }
+    
+    // Format the number with leading zeros (at least 2 digits, up to billion digits)
+    $formattedNumber = str_pad((string) $nextNumber, 2, '0', STR_PAD_LEFT);
+    
+    return "FAM-{$formattedNumber}";
   }
 
   public function getAllParents(): array

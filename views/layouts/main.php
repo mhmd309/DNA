@@ -59,6 +59,12 @@ require_once dirname(__DIR__) . '/init.php';
 
   <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-30 hidden"></div>
 
+  <!-- Image Preview Popup -->
+  <div id="imagePreviewPopup" class="fixed inset-0 bg-black/80 z-[9999] hidden flex items-center justify-center p-4">
+    <button id="closeImagePreview" class="absolute top-4 left-4 text-white text-3xl hover:text-gray-300 transition">&times;</button>
+    <img id="previewImage" src="" alt="معاينة" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl">
+  </div>
+
   <main id="mainContent" class="pt-16 min-h-screen transition-all duration-300 sidebar-open-main">
     <div class="p-4 md:p-6 lg:p-8 fade-in">
       <?= $content ?>

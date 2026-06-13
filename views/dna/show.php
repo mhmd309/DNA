@@ -85,13 +85,25 @@ require_once dirname(__DIR__) . '/init.php';
     <h3 class="font-bold mb-4"><i class="fas fa-paperclip ml-2"></i> المرفقات</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <?php foreach ($test['attachments'] as $att): ?>
-        <a href="<?= uploadUrl($att['file_path']) ?>" target="_blank" class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-          <i class="fas <?= $att['file_type'] === 'pdf' ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500' ?> text-xl"></i>
-          <div>
-            <div class="text-sm font-medium"><?= e($att['file_name']) ?></div>
-            <div class="text-xs text-gray-500"><?= strtoupper($att['file_type']) ?></div>
+        <?php if (in_array($att['file_type'], ['jpg', 'jpeg', 'png', 'webp'])): ?>
+          <!-- Image Attachment: Previewable -->
+          <div class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition cursor-pointer" data-preview-image="<?= uploadUrl($att['file_path']) ?>">
+            <img src="<?= uploadUrl($att['file_path']) ?>" alt="<?= e($att['file_name']) ?>" class="w-12 h-12 object-cover rounded-lg">
+            <div>
+              <div class="text-sm font-medium"><?= e($att['file_name']) ?></div>
+              <div class="text-xs text-gray-500"><?= strtoupper($att['file_type']) ?></div>
+            </div>
           </div>
-        </a>
+        <?php else: ?>
+          <!-- Non-image Attachment: Open in new tab -->
+          <a href="<?= uploadUrl($att['file_path']) ?>" target="_blank" class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+            <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+            <div>
+              <div class="text-sm font-medium"><?= e($att['file_name']) ?></div>
+              <div class="text-xs text-gray-500"><?= strtoupper($att['file_type']) ?></div>
+            </div>
+          </a>
+        <?php endif; ?>
       <?php endforeach; ?>
     </div>
   </div>

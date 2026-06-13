@@ -161,6 +161,16 @@ class DnaTestController extends Controller
       return;
     }
 
+    // Delete all old attachments first
+    $oldFilePaths = $this->model->deleteAllAttachments($testId);
+    // Delete old files from disk
+    foreach ($oldFilePaths as $path) {
+      $fullPath = __DIR__ . '/../../public/' . $path;
+      if (file_exists($fullPath)) {
+        unlink($fullPath);
+      }
+    }
+
     $files = $_FILES['attachments'];
     $count = count($files['name']);
 
