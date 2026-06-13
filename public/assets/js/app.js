@@ -86,10 +86,35 @@ const App = {
     const path = window.location.pathname;
     document.querySelectorAll('.sidebar-link').forEach(link => {
       const href = link.getAttribute('href');
-      if (href && path.includes(href.replace(this.baseUrl, ''))) {
-        link.classList.add('active');
+      if (href) {
+        // First remove active from all links
+        link.classList.remove('active');
+
+        // Check for exact match
+        if (path === href) {
+          link.classList.add('active');
+        }
       }
     });
+
+    // Now handle subpages - for example, if we're on /dna-tests/123, we might want /dna-tests to be active
+    // But in our case, we have two separate DNA links, so we need special handling
+    const dnaTestsPath = this.baseUrl + '/dna-tests';
+    const dnaComparePath = this.baseUrl + '/dna-tests/compare';
+
+    if (path === dnaComparePath) {
+      // On compare page, only activate compare link
+      const compareLink = Array.from(document.querySelectorAll('.sidebar-link')).find(link => link.getAttribute('href') === dnaComparePath);
+      if (compareLink) {
+        compareLink.classList.add('active');
+      }
+    } else if (path.startsWith(dnaTestsPath + '/')) {
+      // On other DNA subpages, activate the main DNA tests link
+      const dnaTestsLink = Array.from(document.querySelectorAll('.sidebar-link')).find(link => link.getAttribute('href') === dnaTestsPath);
+      if (dnaTestsLink) {
+        dnaTestsLink.classList.add('active');
+      }
+    }
   },
 
   initNumericInputs() {

@@ -18,13 +18,14 @@ require_once dirname(__DIR__) . '/init.php';
   <form method="GET" class="flex flex-col sm:flex-row gap-4">
     <div class="flex-1">
       <label class="block text-sm font-medium mb-2">اختر فحص DNA للمقارنة</label>
-      <input type="text" list="dnaTestsList" id="dnaTestInput" class="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="ابحث بالاسم..." autocomplete="off">
-      <datalist id="dnaTestsList">
-        <?php foreach ($tests as $test): ?>
-          <option value="<?= e($test['person_name']) ?>" data-id="<?= $test['id'] ?>"><?= e($test['sample_date'] ?? 'بدون تاريخ') ?></option>
-        <?php endforeach; ?>
-      </datalist>
-      <input type="hidden" name="test_id" id="dnaTestId" value="<?= $selectedTestId ?>">
+      <div class="searchable-select" data-static='<?= json_encode(array_map(fn($t) => ["id" => $t["id"], "text" => $t["person_name"], "subtext" => $t["sample_date"] ?? "بدون تاريخ"], $tests), JSON_UNESCAPED_UNICODE) ?>'>
+        <div class="relative">
+          <input type="text" class="ss-input w-full px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="ابحث بالاسم أو التاريخ..." autocomplete="off">
+          <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <div class="ss-dropdown hidden"></div>
+        <input type="hidden" name="test_id" class="ss-hidden" value="<?= $selectedTestId ?>">
+      </div>
     </div>
     <div class="flex items-end">
       <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition w-full sm:w-auto">مقارنة</button>
@@ -33,23 +34,16 @@ require_once dirname(__DIR__) . '/init.php';
   
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const input = document.getElementById('dnaTestInput');
-      const hiddenInput = document.getElementById('dnaTestId');
-      const tests = <?= json_encode($tests, JSON_UNESCAPED_UNICODE) ?>;
-      
-      // Set initial value if selected
+      const selectEl = document.querySelector('.searchable-select');
       <?php if ($selectedTestId): ?>
+        const tests = <?= json_encode($tests, JSON_UNESCAPED_UNICODE) ?>;
         const selectedTest = tests.find(t => t.id === <?= $selectedTestId ?>);
         if (selectedTest) {
-          input.value = selectedTest.person_name;
+          setTimeout(() => {
+            selectEl.searchableSelect.setValue(selectedTest.id, selectedTest.person_name);
+          }, 100);
         }
       <?php endif; ?>
-      
-      input.addEventListener('input', () => {
-        // Find matching test
-        const match = tests.find(t => t.person_name === input.value);
-        hiddenInput.value = match ? match.id : '';
-      });
     });
   </script>
 </div>

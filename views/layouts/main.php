@@ -66,6 +66,7 @@ require_once dirname(__DIR__) . '/init.php';
   </main>
 
   <script src="<?= $baseUrl ?>/public/assets/js/app.js"></script>
+  <script src="<?= $baseUrl ?>/public/assets/js/searchable-select.js"></script>
   <?php if ($scripts !== ''): ?><?= $scripts ?><?php endif; ?>
 </body>
 
