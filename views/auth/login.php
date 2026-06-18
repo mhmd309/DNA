@@ -60,7 +60,6 @@ require_once dirname(__DIR__) . '/init.php';
         <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
       </button>
     </form>
-    <p class="text-center text-xs text-gray-400 mt-6">admin@dna.com / Admin@123</p>
   </div>
 </div>
 
