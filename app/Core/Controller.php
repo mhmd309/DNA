@@ -21,6 +21,11 @@ abstract class Controller
     View::redirect($path);
   }
 
+  protected function redirectUrl(string $path): string
+  {
+    return url($path);
+  }
+
   protected function input(?string $key = null, mixed $default = null): mixed
   {
     $data = Validator::sanitizeArray(

@@ -16,6 +16,10 @@ return [
   'per_page'            => 15,
   'national_id_length'  => 14,
   'phone_length'        => 11,
+  'login_rate_limit'    => [
+    'max_attempts'  => 5,
+    'decay_minutes' => 15,
+  ],
   'roles'          => [
     'admin'       => ['label' => 'مدير النظام', 'permissions' => ['*']],
     'manager'     => ['label' => 'مدير', 'permissions' => ['dashboard.view', 'families.view', 'families.create', 'individuals.view', 'individuals.create', 'dna.view', 'dna.create', 'users.view']],

@@ -23,11 +23,10 @@ class Auth
   public static function login(array $user, bool $remember = false): void
   {
     $_SESSION[self::SESSION_KEY] = [
-      'id'     => $user['id'],
-      'name'   => $user['name'],
-      'email'  => $user['email'],
-      'role'   => $user['role'],
-      'avatar' => $user['avatar'] ?? null,
+      'id'    => $user['id'],
+      'name'  => $user['name'],
+      'email' => $user['email'],
+      'role'  => $user['role'],
     ];
 
     if ($remember) {
@@ -36,14 +35,21 @@ class Auth
       $stmt = $db->prepare('UPDATE users SET remember_token = ? WHERE id = ?');
       $stmt->bind_param('si', $token, $user['id']);
       $stmt->execute();
-      setcookie(self::REMEMBER_COOKIE, $token, time() + (86400 * 30), '/DNA', '', false, true);
+      setcookie(self::REMEMBER_COOKIE, $token, time() + (86400 * 30), self::cookiePath(), '', false, true);
     }
+  }
+
+  private static function cookiePath(): string
+  {
+    $config = require __DIR__ . '/../../config/app.php';
+    $base = rtrim($config['base_url'], '/');
+    return $base === '' ? '/' : $base . '/';
   }
 
   private static function loginFromRememberToken(string $token): void
   {
     $db = Database::getInstance();
-    $stmt = $db->prepare('SELECT id, name, email, role, avatar FROM users WHERE remember_token = ? AND deleted_at IS NULL AND is_active = 1 LIMIT 1');
+    $stmt = $db->prepare('SELECT id, name, email, role FROM users WHERE remember_token = ? AND deleted_at IS NULL AND is_active = 1 LIMIT 1');
     $stmt->bind_param('s', $token);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -64,7 +70,7 @@ class Auth
     }
 
     unset($_SESSION[self::SESSION_KEY]);
-    setcookie(self::REMEMBER_COOKIE, '', time() - 3600, '/DNA', '', false, true);
+    setcookie(self::REMEMBER_COOKIE, '', time() - 3600, self::cookiePath(), '', false, true);
     session_destroy();
   }
 
@@ -86,6 +92,14 @@ class Auth
   public static function requireAuth(): void
   {
     if (!self::check()) {
+      if (self::isAjax()) {
+        $config = require __DIR__ . '/../../config/app.php';
+        View::json([
+          'success'  => false,
+          'message'  => 'انتهت جلستك، يرجى تسجيل الدخول مرة أخرى',
+          'redirect' => $config['base_url'] . '/login',
+        ], 401);
+      }
       View::redirect('login');
     }
   }

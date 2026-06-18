@@ -53,9 +53,11 @@ require_once dirname(__DIR__) . '/init.php';
       </a>
     <?php endif; ?>
 
+    <?php if (can('families.view') || can('individuals.view') || can('dna.view') || can('users.view')): ?>
     <a href="<?= $baseUrl ?>/reports" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
       <i class="fas fa-chart-line w-5"></i> التقارير
     </a>
+    <?php endif; ?>
     <a href="<?= $baseUrl ?>/user-guide.html" target="_blank" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
       <i class="fa-solid fa-question w-5"></i> دليل المستخدم
     </a>

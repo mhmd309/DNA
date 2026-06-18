@@ -72,9 +72,9 @@ class FamilyController extends Controller
       } catch (\Throwable) {
         // لا توقف الحفظ إذا فشل تسجيل النشاط
       }
-      $this->json(['success' => true, 'message' => 'تم إضافة العائلة بنجاح', 'redirect' => '/DNA/families']);
-    } catch (\Throwable $e) {
-      $this->json(['success' => false, 'message' => 'حدث خطأ أثناء الحفظ: ' . $e->getMessage()], 500);
+      $this->json(['success' => true, 'message' => 'تم إضافة العائلة بنجاح', 'redirect' => $this->redirectUrl('families')]);
+    } catch (\Throwable) {
+      $this->json(['success' => false, 'message' => 'تعذر حفظ بيانات العائلة، يرجى التحقق من البيانات والمحاولة مجدداً'], 500);
     }
   }
 
@@ -91,7 +91,7 @@ class FamilyController extends Controller
   {
     $family = $this->model->getWithMembers((int) $id);
     if (!$family) {
-      $this->json(['success' => false, 'message' => 'العائلة غير موجودة'], 404);
+      $this->redirect('families');
     }
     $this->render('families/tree', ['title' => 'شجرة العائلة', 'family' => $family], 'none');
   }
@@ -131,9 +131,9 @@ class FamilyController extends Controller
     try {
       $this->model->updateFamily($familyId, $data['family'], $data['father'], $data['mother'], $data['children']);
       ActivityLogger::log('update', 'family', $familyId, 'تعديل عائلة: ' . $data['family']['family_name']);
-      $this->json(['success' => true, 'message' => 'تم تحديث العائلة بنجاح', 'redirect' => '/DNA/families/show/' . $familyId]);
-    } catch (\Throwable $e) {
-      $this->json(['success' => false, 'message' => 'حدث خطأ أثناء التحديث: ' . $e->getMessage()], 500);
+      $this->json(['success' => true, 'message' => 'تم تحديث العائلة بنجاح', 'redirect' => $this->redirectUrl('families/show/' . $familyId)]);
+    } catch (\Throwable) {
+      $this->json(['success' => false, 'message' => 'تعذر تحديث بيانات العائلة، يرجى التحقق من البيانات والمحاولة مجدداً'], 500);
     }
   }
 
@@ -318,8 +318,14 @@ class FamilyController extends Controller
           $child['id_card_image'] = $upload['path'];
         }
       } elseif (!empty($child['id_card_image'])) {
-      } elseif ($existing && isset($existing['children'][$i])) {
-        $child['id_card_image'] = $existing['children'][$i]['id_card_image'];
+        // احتفظ بالقيمة المرسلة من النموذج
+      } elseif ($existing && !empty($child['id'])) {
+        foreach ($existing['children'] as $existingChild) {
+          if ((int) $existingChild['id'] === (int) $child['id']) {
+            $child['id_card_image'] = $existingChild['id_card_image'] ?? '';
+            break;
+          }
+        }
       }
     }
   }

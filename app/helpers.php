@@ -7,6 +7,34 @@ function e(?string $value): string
   return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+function baseUrl(): string
+{
+  static $url = null;
+  if ($url === null) {
+    $config = require __DIR__ . '/../config/app.php';
+    $url = rtrim($config['base_url'], '/');
+  }
+  return $url;
+}
+
+function url(string $path = ''): string
+{
+  if ($path === '') {
+    return baseUrl();
+  }
+  return baseUrl() . '/' . ltrim($path, '/');
+}
+
+function csrf_token(): string
+{
+  return \App\Core\Csrf::token();
+}
+
+function csrf_field(): string
+{
+  return '<input type="hidden" name="' . \App\Core\Csrf::FIELD . '" value="' . e(csrf_token()) . '">';
+}
+
 function nationalIdAttrs(): string
 {
   $config = require __DIR__ . '/../config/app.php';

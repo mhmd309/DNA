@@ -27,3 +27,19 @@ spl_autoload_register(function (string $class): void {
     require $file;
   }
 });
+
+use App\Core\View;
+
+set_exception_handler(function (\Throwable $e): void {
+  if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+    View::json([
+      'success' => false,
+      'message' => 'حدث خطأ أثناء معالجة الطلب، يرجى المحاولة لاحقاً',
+    ], 500);
+  }
+
+  http_response_code(500);
+  echo 'حدث خطأ في النظام';
+  exit;
+});

@@ -1,6 +1,5 @@
 class SearchableSelect {
-  constructor(container) {
-    this.container = container;
+  constructor(container) {    this.container = container;
     this.input = container.querySelector('.ss-input');
     this.hidden = container.querySelector('.ss-hidden');
     this.dropdown = container.querySelector('.ss-dropdown');
@@ -19,8 +18,22 @@ class SearchableSelect {
       }
     }
 
-    this.input.addEventListener('input', () => this.search());
+    this.input.addEventListener('input', () => {
+      if (this.input.value.trim() === '') {
+        this.hidden.value = '';
+      }
+      this.search();
+    });
     this.input.addEventListener('focus', () => this.search());
+
+    const clearBtn = container.querySelector('.ss-clear');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        this.clear();
+        this.dropdown.classList.add('hidden');
+      });
+    }
+
     document.addEventListener('click', (e) => {
       if (!container.contains(e.target)) this.dropdown.classList.add('hidden');
     });
@@ -33,6 +46,12 @@ class SearchableSelect {
       text: item.text || item.family_name || item.person_name || item.name || '',
       subtext: item.subtext || item.family_code || item.sample_date || ''
     };
+  }
+
+  escape(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
   }
 
   search() {
@@ -51,13 +70,13 @@ class SearchableSelect {
     } else if (this.apiUrl) {
       // Use API
       this.timeout = setTimeout(async () => {
-        try {
-          const res = await fetch(`${this.apiUrl}?q=${encodeURIComponent(q)}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-          });
-          const data = await res.json();
-          this.render(data.data || []);
-        } catch { /* silent */ }
+        const result = await Api.request(`${this.apiUrl}?q=${encodeURIComponent(q)}`);
+        if (result.data.success) {
+          this.render(result.data.data || []);
+        } else {
+          this.dropdown.innerHTML = `<div class="p-3 text-sm text-red-500 text-center">${result.data.message || 'تعذر تحميل النتائج'}</div>`;
+          this.dropdown.classList.remove('hidden');
+        }
       }, 300);
     }
   }
@@ -68,11 +87,13 @@ class SearchableSelect {
     } else {
       this.dropdown.innerHTML = items.map(item => {
         const normalized = this.normalizeItem(item);
+        const text = this.escape(normalized.text);
+        const subtext = this.escape(normalized.subtext);
         return `
                 <button type="button" class="w-full text-right px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm border-b border-gray-100 dark:border-gray-700 last:border-0 ss-option"
-                    data-id="${normalized.id}" data-text="${normalized.text}">
-                    <span class="font-medium">${normalized.text}</span>
-                    ${normalized.subtext ? `<span class="text-gray-500 text-xs mr-2">${normalized.subtext}</span>` : ''}
+                    data-id="${normalized.id}" data-text="${text}">
+                    <span class="font-medium">${text}</span>
+                    ${subtext ? `<span class="text-gray-500 text-xs mr-2">${subtext}</span>` : ''}
                 </button>
             `;
       }).join('');

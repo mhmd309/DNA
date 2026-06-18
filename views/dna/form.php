@@ -21,6 +21,7 @@ if (!empty($t['family_name'])) {
 </div>
 
 <form id="dnaForm" action="<?= $baseUrl ?>/dna-tests/<?= $action ?>" method="POST" enctype="multipart/form-data" class="max-w-3xl">
+  <?= csrf_field() ?>
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -126,11 +127,18 @@ if (!empty($t['family_name'])) {
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mt-6">
     <div>
       <label class="block text-sm font-medium mb-1">مرفقات (PDF, JPG, PNG, WEBP)</label>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">الملفات الجديدة تُضاف للمرفقات الحالية دون حذف القديمة.</p>
       <input type="file" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" class="w-full text-sm">
       <?php if (!empty($t['attachments'])): ?>
-        <div class="mt-2 space-y-1">
+        <div class="mt-4 space-y-2">
+          <p class="text-xs font-medium text-gray-600 dark:text-gray-300">المرفقات الحالية:</p>
           <?php foreach ($t['attachments'] as $att): ?>
-            <div class="text-xs text-gray-500 flex items-center gap-2"><i class="fas fa-paperclip"></i> <?= e($att['file_name']) ?></div>
+            <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 p-2 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/30 cursor-pointer">
+              <input type="checkbox" name="remove_attachments[]" value="<?= (int) $att['id'] ?>" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+              <i class="fas fa-paperclip text-gray-400"></i>
+              <span class="flex-1 truncate"><?= e($att['file_name']) ?></span>
+              <span class="text-xs text-red-500">حذف</span>
+            </label>
           <?php endforeach; ?>
         </div>
       <?php endif; ?>

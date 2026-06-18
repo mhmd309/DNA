@@ -64,18 +64,6 @@ class Family extends Model
       }
     }
 
-    if (empty($family['children'])) {
-      $stmt2 = $this->db->prepare(
-        "SELECT * FROM family_members WHERE family_id = ? AND role = 'child' AND deleted_at IS NOT NULL ORDER BY deleted_at DESC, sort_order, id"
-      );
-      $stmt2->bind_param('i', $id);
-      $stmt2->execute();
-      $deletedChildren = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
-      if (!empty($deletedChildren)) {
-        $family['children'] = $deletedChildren;
-      }
-    }
-
     return $family;
   }
 
@@ -160,6 +148,7 @@ class Family extends Model
 
   private function insertMember(int $familyId, string $role, array $data, int $sortOrder): int
   {
+    $individualId = !empty($data['individual_id']) ? (int) $data['individual_id'] : null;
     $name = $data['name'];
     $nationalId = !empty($data['national_id']) ? $data['national_id'] : null;
     $bloodType = !empty($data['blood_type']) ? $data['blood_type'] : null;
@@ -180,12 +169,13 @@ class Family extends Model
     $d21s11_2 = $data['D21S11_2'] ?? null;
 
     $stmt = $this->db->prepare(
-      'INSERT INTO family_members (family_id, role, name, national_id, blood_type, phone, birth_date, address, gender, id_card_image, sort_order, D3S1358_1, D3S1358_2, vWA_1, vWA_2, FGA_1, FGA_2, D8S1179_1, D8S1179_2, D21S11_1, D21S11_2)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO family_members (family_id, individual_id, role, name, national_id, blood_type, phone, birth_date, address, gender, id_card_image, sort_order, D3S1358_1, D3S1358_2, vWA_1, vWA_2, FGA_1, FGA_2, D8S1179_1, D8S1179_2, D21S11_1, D21S11_2)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
     $stmt->bind_param(
-      'isssssssssissssssssss',
+      'iisssssssssissssssssss',
       $familyId,
+      $individualId,
       $role,
       $name,
       $nationalId,
@@ -213,6 +203,7 @@ class Family extends Model
 
   private function updateMember(int $familyId, int $memberId, string $role, array $data, int $sortOrder): void
   {
+    $individualId = !empty($data['individual_id']) ? (int) $data['individual_id'] : null;
     $name = $data['name'];
     $nationalId = !empty($data['national_id']) ? $data['national_id'] : null;
     $bloodType = !empty($data['blood_type']) ? $data['blood_type'] : null;
@@ -234,11 +225,12 @@ class Family extends Model
 
     $stmt = $this->db->prepare(
       'UPDATE family_members
-             SET name = ?, national_id = ?, blood_type = ?, phone = ?, birth_date = ?, address = ?, gender = ?, id_card_image = ?, sort_order = ?, deleted_at = NULL, D3S1358_1 = ?, D3S1358_2 = ?, vWA_1 = ?, vWA_2 = ?, FGA_1 = ?, FGA_2 = ?, D8S1179_1 = ?, D8S1179_2 = ?, D21S11_1 = ?, D21S11_2 = ?
+             SET individual_id = ?, name = ?, national_id = ?, blood_type = ?, phone = ?, birth_date = ?, address = ?, gender = ?, id_card_image = ?, sort_order = ?, deleted_at = NULL, D3S1358_1 = ?, D3S1358_2 = ?, vWA_1 = ?, vWA_2 = ?, FGA_1 = ?, FGA_2 = ?, D8S1179_1 = ?, D8S1179_2 = ?, D21S11_1 = ?, D21S11_2 = ?
              WHERE id = ? AND family_id = ? AND role = ?'
     );
     $stmt->bind_param(
-      'ssssssssissssssssssiis',
+      'issssssssissssssssssiis',
+      $individualId,
       $name,
       $nationalId,
       $bloodType,
@@ -268,7 +260,7 @@ class Family extends Model
   private function softDeleteMissingChildren(int $familyId, array $keepIds): void
   {
     $sql = "UPDATE family_members
-                SET deleted_at = NOW(), national_id = NULL, phone = NULL
+                SET deleted_at = NOW(), national_id = NULL, phone = NULL, individual_id = NULL
                 WHERE family_id = ? AND role = 'child' AND deleted_at IS NULL";
     $params = [$familyId];
     $types = 'i';
@@ -293,6 +285,38 @@ class Family extends Model
   public function nationalIdExists(string $nationalId, $excludeMemberIds = null): bool
   {
     if (empty($nationalId)) return false;
+
+    $stmtInd = $this->db->prepare('SELECT id FROM individuals WHERE national_id = ? AND deleted_at IS NULL LIMIT 1');
+    $stmtInd->bind_param('s', $nationalId);
+    $stmtInd->execute();
+    $individualRow = $stmtInd->get_result()->fetch_assoc();
+    if ($individualRow) {
+      $linkedIndividualId = (int) $individualRow['id'];
+      if ($excludeMemberIds) {
+        if (!is_array($excludeMemberIds)) {
+          $excludeMemberIds = [$excludeMemberIds];
+        }
+        if (!empty($excludeMemberIds)) {
+          $placeholders = implode(',', array_fill(0, count($excludeMemberIds), '?'));
+          $linkSql = "SELECT id FROM family_members WHERE individual_id = ? AND id IN ($placeholders) AND deleted_at IS NULL LIMIT 1";
+          $linkParams = array_merge([$linkedIndividualId], $excludeMemberIds);
+          $linkTypes = 'i' . str_repeat('i', count($excludeMemberIds));
+          $stmtLink = $this->db->prepare($linkSql);
+          $stmtLink->bind_param($linkTypes, ...$linkParams);
+          $stmtLink->execute();
+          if ($stmtLink->get_result()->fetch_assoc()) {
+            // نفس الشخص المرتبط بالفعل — ليس تكراراً
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    }
+
     $sql = 'SELECT id FROM family_members WHERE national_id = ? AND deleted_at IS NULL';
     $params = [$nationalId];
     $types = 's';
@@ -385,7 +409,7 @@ class Family extends Model
   public function softDelete(int $id): bool
   {
     $stmt = $this->db->prepare(
-      'UPDATE family_members SET deleted_at = NOW(), national_id = NULL, phone = NULL WHERE family_id = ? AND deleted_at IS NULL'
+      'UPDATE family_members SET deleted_at = NOW(), national_id = NULL, phone = NULL, individual_id = NULL WHERE family_id = ? AND deleted_at IS NULL'
     );
     $stmt->bind_param('i', $id);
     $stmt->execute();
@@ -454,52 +478,144 @@ class Family extends Model
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }
 
-  public function upsertChildFromIndividual(array $data): void
+  public function syncIndividualFamilyLink(int $individualId, array $data, array $previous = []): void
+  {
+    $newFamilyId = !empty($data['family_id']) ? (int) $data['family_id'] : null;
+    $oldFamilyId = !empty($previous['family_id']) ? (int) $previous['family_id'] : null;
+
+    if ($oldFamilyId && $oldFamilyId !== $newFamilyId) {
+      $this->removeChildLinkedToIndividual($individualId, $oldFamilyId, $previous);
+    }
+
+    if ($newFamilyId) {
+      $data['family_id'] = $newFamilyId;
+      $this->upsertChildFromIndividual($data, $individualId);
+    }
+  }
+
+  public function upsertChildFromIndividual(array $data, ?int $individualId = null): void
   {
     if (empty($data['family_id'])) {
       return;
     }
 
     $familyId = (int) $data['family_id'];
-    $nationalId = $data['national_id'] ?? null;
-    $phone = $data['phone'] ?? null;
-
-    // Check if child exists
-    $stmt = $this->db->prepare("
-      SELECT id FROM family_members 
-      WHERE family_id = ? AND role = 'child' 
-      AND (national_id = ? OR phone = ?) 
-      AND deleted_at IS NULL
-    ");
-    $stmt->bind_param('iss', $familyId, $nationalId, $phone);
-    $stmt->execute();
-    $existing = $stmt->get_result()->fetch_assoc();
-
-    if ($existing) {
-      // Update existing child
-      $this->updateMember($familyId, (int) $existing['id'], 'child', $data, 0);
-    } else {
-      // Insert new child
-      $this->insertMember($familyId, 'child', $data, 0);
+    if ($individualId) {
+      $data['individual_id'] = $individualId;
     }
+
+    $memberId = $this->findChildMemberForIndividual($familyId, $individualId, $data);
+    if ($memberId) {
+      $this->updateMember($familyId, $memberId, 'child', $data, 0);
+      return;
+    }
+
+    $this->insertMember($familyId, 'child', $data, 0);
   }
 
+  public function removeChildLinkedToIndividual(int $individualId, int $familyId, array $fallback = []): void
+  {
+    $memberId = $this->findChildMemberForIndividual($familyId, $individualId, $fallback);
+    if (!$memberId) {
+      return;
+    }
+
+    $stmt = $this->db->prepare(
+      "UPDATE family_members
+       SET deleted_at = NOW(), national_id = NULL, phone = NULL, individual_id = NULL
+       WHERE id = ? AND family_id = ? AND role = 'child' AND deleted_at IS NULL"
+    );
+    $stmt->bind_param('ii', $memberId, $familyId);
+    $stmt->execute();
+  }
+
+  private function findChildMemberForIndividual(int $familyId, ?int $individualId, array $criteria = []): ?int
+  {
+    if ($individualId) {
+      $stmt = $this->db->prepare(
+        "SELECT id FROM family_members
+         WHERE family_id = ? AND role = 'child' AND individual_id = ? AND deleted_at IS NULL
+         LIMIT 1"
+      );
+      $stmt->bind_param('ii', $familyId, $individualId);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if ($row) {
+        return (int) $row['id'];
+      }
+    }
+
+    $nationalId = $criteria['national_id'] ?? null;
+    if (!empty($nationalId)) {
+      $stmt = $this->db->prepare(
+        "SELECT id FROM family_members
+         WHERE family_id = ? AND role = 'child' AND national_id = ? AND deleted_at IS NULL
+         LIMIT 1"
+      );
+      $stmt->bind_param('is', $familyId, $nationalId);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if ($row) {
+        return (int) $row['id'];
+      }
+    }
+
+    $name = $criteria['name'] ?? null;
+    $birthDate = $criteria['birth_date'] ?? null;
+    $gender = $criteria['gender'] ?? null;
+
+    if (!empty($name) && !empty($birthDate)) {
+      $stmt = $this->db->prepare(
+        "SELECT id FROM family_members
+         WHERE family_id = ? AND role = 'child' AND name = ? AND birth_date = ? AND deleted_at IS NULL
+         LIMIT 1"
+      );
+      $stmt->bind_param('iss', $familyId, $name, $birthDate);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if ($row) {
+        return (int) $row['id'];
+      }
+    }
+
+    if (!empty($name) && !empty($gender)) {
+      $stmt = $this->db->prepare(
+        "SELECT id FROM family_members
+         WHERE family_id = ? AND role = 'child' AND name = ? AND gender = ? AND deleted_at IS NULL
+         LIMIT 1"
+      );
+      $stmt->bind_param('iss', $familyId, $name, $gender);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if ($row) {
+        return (int) $row['id'];
+      }
+    }
+
+    return null;
+  }
+
+  /** @deprecated استخدم removeChildLinkedToIndividual */
   public function softDeleteChildByIdentifiers(int $familyId, ?string $nationalId = null, ?string $phone = null): void
   {
-    $sql = "UPDATE family_members 
-            SET deleted_at = NOW(), national_id = NULL, phone = NULL 
-            WHERE family_id = ? AND role = 'child'";
+    if ($nationalId === null && $phone === null) {
+      return;
+    }
+
+    $sql = "UPDATE family_members
+            SET deleted_at = NOW(), national_id = NULL, phone = NULL, individual_id = NULL
+            WHERE family_id = ? AND role = 'child' AND deleted_at IS NULL";
     $params = [$familyId];
     $types = 'i';
 
     if ($nationalId !== null) {
-      $sql .= " AND national_id = ?";
+      $sql .= ' AND national_id = ?';
       $params[] = $nationalId;
       $types .= 's';
     }
 
     if ($phone !== null) {
-      $sql .= " AND phone = ?";
+      $sql .= ' AND phone = ?';
       $params[] = $phone;
       $types .= 's';
     }

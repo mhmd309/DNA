@@ -146,16 +146,28 @@ class DnaTest extends Model
     return $this->db->lastInsertId();
   }
 
-  public function deleteAttachment(int $attachmentId): ?string
+  public function deleteAttachment(int $attachmentId, ?int $testId = null): ?string
   {
-    $stmt = $this->db->prepare('SELECT file_path FROM dna_test_attachments WHERE id = ?');
-    $stmt->bind_param('i', $attachmentId);
+    if ($testId !== null) {
+      $stmt = $this->db->prepare('SELECT file_path FROM dna_test_attachments WHERE id = ? AND dna_test_id = ?');
+      $stmt->bind_param('ii', $attachmentId, $testId);
+    } else {
+      $stmt = $this->db->prepare('SELECT file_path FROM dna_test_attachments WHERE id = ?');
+      $stmt->bind_param('i', $attachmentId);
+    }
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();
-    if (!$row) return null;
+    if (!$row) {
+      return null;
+    }
 
-    $del = $this->db->prepare('DELETE FROM dna_test_attachments WHERE id = ?');
-    $del->bind_param('i', $attachmentId);
+    if ($testId !== null) {
+      $del = $this->db->prepare('DELETE FROM dna_test_attachments WHERE id = ? AND dna_test_id = ?');
+      $del->bind_param('ii', $attachmentId, $testId);
+    } else {
+      $del = $this->db->prepare('DELETE FROM dna_test_attachments WHERE id = ?');
+      $del->bind_param('i', $attachmentId);
+    }
     $del->execute();
     return $row['file_path'];
   }

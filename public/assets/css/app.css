@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+@import url('../fonts/cairo/cairo.css');
 
 * {
   font-family: 'Cairo', sans-serif;
@@ -173,6 +173,12 @@ html:not(.sidebar-collapsed) .sidebar-open-nav {
   width: 2px;
   height: 30px;
   background: #94a3b8;
+}
+
+.dark .tree-couple::after,
+.dark .tree-children::before,
+.dark .tree-child-node::before {
+  background: #475569;
 }
 
 .tree-children {

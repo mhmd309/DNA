@@ -18,31 +18,8 @@ require_once dirname(__DIR__) . '/init.php';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= e($title ?? 'نظام DNA') ?> - <?= e($config['name']) ?></title>
   <link rel="icon" type="image/jpeg" href="<?= $baseUrl ?>/public/dnalogofavicon.jpg">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: '#F0F0FF',
-              100: '#E1E1FF',
-              200: '#C2C3FF',
-              300: '#A4A5FF',
-              400: '#8586FF',
-              500: '#6367FF',
-              600: '#4D51E6',
-              700: '#363AC0',
-              800: '#1F2299',
-              900: '#080B73'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/public/assets/css/tailwind.css">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/public/assets/vendor/font-awesome/css/all.min.css">
   <link rel="stylesheet" href="<?= $baseUrl ?>/public/assets/css/app.css">
   <script>
     if (localStorage.getItem('dna_theme') === 'dark') document.documentElement.classList.add('dark');
@@ -51,6 +28,8 @@ require_once dirname(__DIR__) . '/init.php';
       document.documentElement.classList.toggle('sidebar-collapsed', !open);
     })();
   </script>
+  <script>window.DNA_BASE_URL = <?= json_encode($baseUrl, JSON_UNESCAPED_UNICODE) ?>;</script>
+  <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">

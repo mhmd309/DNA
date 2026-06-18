@@ -17,7 +17,7 @@ require_once dirname(__DIR__) . '/init.php';
         <i class="fas fa-user text-primary-600 dark:text-primary-400"></i>
       </div>
       <div>
-        <p class="text-sm">نوع الحساب: <strong style="color: #3b82f6"><?= e($user['role'] === 'admin' ? 'مدير النظام' : ($user['role'] === 'editor' ? 'إدخال البيانات' : 'رؤية السجلات فقط')) ?></strong></p>
+        <p class="text-sm">نوع الحساب: <strong class="text-primary-600 dark:text-primary-400"><?= e(roleLabel($user['role'])) ?></strong></p>
       </div>
     </div>
   <?php endif; ?>

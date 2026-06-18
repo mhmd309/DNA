@@ -39,6 +39,10 @@ class DashboardController extends Controller
 
   public function notifications(): void
   {
+    if (!\App\Core\Auth::hasPermission('users.view')) {
+      $this->json(['success' => false, 'message' => 'ليس لديك صلاحية لعرض سجل النشاط'], 403);
+    }
+
     $db = \App\Core\Database::getInstance();
     $stmt = $db->prepare(
       'SELECT al.*, u.name as user_name FROM activity_logs al

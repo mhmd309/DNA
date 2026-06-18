@@ -55,7 +55,7 @@ class UserController extends Controller
 
     $id = $this->model->create($data);
     ActivityLogger::log('create', 'user', $id, 'إضافة مستخدم: ' . $data['name']);
-    $this->json(['success' => true, 'message' => 'تم إضافة المستخدم بنجاح', 'redirect' => '/DNA/users']);
+    $this->json(['success' => true, 'message' => 'تم إضافة المستخدم بنجاح', 'redirect' => $this->redirectUrl('users')]);
   }
 
   public function edit(string $id): void
@@ -99,7 +99,7 @@ class UserController extends Controller
 
     $this->model->update($userId, $data);
     ActivityLogger::log('update', 'user', $userId, 'تعديل مستخدم: ' . $data['name']);
-    $this->json(['success' => true, 'message' => 'تم تحديث المستخدم بنجاح', 'redirect' => '/DNA/users']);
+    $this->json(['success' => true, 'message' => 'تم تحديث المستخدم بنجاح', 'redirect' => $this->redirectUrl('users')]);
   }
 
   public function delete(string $id): void

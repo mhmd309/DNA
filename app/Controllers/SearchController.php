@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Models\DnaTest;
 use App\Models\Family;
@@ -26,54 +27,57 @@ class SearchController extends Controller
 
     $results = [];
 
-    if (\App\Core\Auth::hasPermission('families.view')) {
+    if (Auth::hasPermission('families.view')) {
       foreach ($familyModel->search($query) as $item) {
         $results[] = [
-          'type'  => 'family',
-          'label' => 'عائلة',
-          'title' => $item['family_name'],
+          'type'     => 'family',
+          'label'    => 'عائلة',
+          'title'    => $item['family_name'],
           'subtitle' => $item['family_code'],
-          'url'   => '/DNA/families/show/' . $item['id'],
-          'icon'  => 'fa-people-roof',
+          'url'      => $this->redirectUrl('families/show/' . $item['id']),
+          'icon'     => 'fa-people-roof',
         ];
       }
     }
 
-    if (\App\Core\Auth::hasPermission('individuals.view')) {
+    if (Auth::hasPermission('individuals.view')) {
       foreach ($individualModel->search($query) as $item) {
         $results[] = [
-          'type'  => 'individual',
-          'label' => 'فرد',
-          'title' => $item['name'],
+          'type'     => 'individual',
+          'label'    => 'فرد',
+          'title'    => $item['name'],
           'subtitle' => $item['national_id'] ?? '',
-          'url'   => '/DNA/individuals/show/' . $item['id'],
-          'icon'  => 'fa-user',
+          'url'      => $this->redirectUrl('individuals/show/' . $item['id']),
+          'icon'     => 'fa-user',
         ];
       }
     }
 
-    if (\App\Core\Auth::hasPermission('dna.view')) {
+    if (Auth::hasPermission('dna.view')) {
       foreach ($dnaModel->search($query) as $item) {
         $results[] = [
-          'type'  => 'dna',
-          'label' => 'فحص DNA',
-          'title' => $item['person_name'],
+          'type'     => 'dna',
+          'label'    => 'فحص DNA',
+          'title'    => $item['person_name'],
           'subtitle' => $item['sample_date'] ?? '',
-          'url'   => '/DNA/dna-tests/show/' . $item['id'],
-          'icon'  => 'fa-dna',
+          'url'      => $this->redirectUrl('dna-tests/show/' . $item['id']),
+          'icon'     => 'fa-dna',
         ];
       }
     }
 
-    if (\App\Core\Auth::hasPermission('users.view')) {
+    if (Auth::hasPermission('users.view')) {
       foreach ($userModel->search($query) as $item) {
+        $userPath = Auth::hasPermission('users.edit')
+          ? 'users/edit/' . $item['id']
+          : 'users';
         $results[] = [
-          'type'  => 'user',
-          'label' => 'مستخدم',
-          'title' => $item['name'],
+          'type'     => 'user',
+          'label'    => 'مستخدم',
+          'title'    => $item['name'],
           'subtitle' => $item['email'],
-          'url'   => '/DNA/users/edit/' . $item['id'],
-          'icon'  => 'fa-user-shield',
+          'url'      => $this->redirectUrl($userPath),
+          'icon'     => 'fa-user-shield',
         ];
       }
     }

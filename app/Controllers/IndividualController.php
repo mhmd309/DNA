@@ -54,11 +54,9 @@ class IndividualController extends Controller
     }
 
     $id = $this->model->create($data, Auth::id());
-    if (!empty($data['family_id'])) {
-      (new Family())->upsertChildFromIndividual($data);
-    }
+    (new Family())->syncIndividualFamilyLink($id, $data);
     ActivityLogger::log('create', 'individual', $id, 'إضافة فرد: ' . $data['name']);
-    $this->json(['success' => true, 'message' => 'تم إضافة الفرد بنجاح', 'redirect' => '/DNA/individuals']);
+    $this->json(['success' => true, 'message' => 'تم إضافة الفرد بنجاح', 'redirect' => $this->redirectUrl('individuals')]);
   }
 
   public function show(string $id): void
@@ -102,16 +100,19 @@ class IndividualController extends Controller
     }
 
     $this->model->update($individualId, $data);
+    (new Family())->syncIndividualFamilyLink($individualId, $data, $existing);
+    ActivityLogger::log('update', 'individual', $individualId, 'تعديل فرد: ' . $data['name']);
+    $message = 'تم تحديث الفرد بنجاح';
     $oldFamilyId = !empty($existing['family_id']) ? (int) $existing['family_id'] : 0;
     $newFamilyId = !empty($data['family_id']) ? (int) $data['family_id'] : 0;
-    $familyModel = new Family();
-    if ($newFamilyId > 0) {
-      $familyModel->upsertChildFromIndividual($data);
-    } elseif ($oldFamilyId > 0) {
-      $familyModel->softDeleteChildByIdentifiers($oldFamilyId, $existing['national_id'] ?? null, null);
+    if ($oldFamilyId && $newFamilyId && $oldFamilyId !== $newFamilyId) {
+      $message = 'تم نقل الفرد إلى العائلة الجديدة بنجاح';
+    } elseif ($oldFamilyId && !$newFamilyId) {
+      $message = 'تم إزالة الفرد من العائلة السابقة بنجاح';
+    } elseif (!$oldFamilyId && $newFamilyId) {
+      $message = 'تم ربط الفرد بالعائلة بنجاح';
     }
-    ActivityLogger::log('update', 'individual', $individualId, 'تعديل فرد: ' . $data['name']);
-    $this->json(['success' => true, 'message' => 'تم تحديث الفرد بنجاح', 'redirect' => '/DNA/individuals/show/' . $individualId]);
+    $this->json(['success' => true, 'message' => $message, 'redirect' => $this->redirectUrl('individuals/show/' . $individualId)]);
   }
 
   public function delete(string $id): void
@@ -122,6 +123,9 @@ class IndividualController extends Controller
       $this->json(['success' => false, 'message' => 'الفرد غير موجود'], 404);
     }
     $this->model->softDelete((int) $id);
+    if (!empty($individual['family_id'])) {
+      (new Family())->removeChildLinkedToIndividual((int) $id, (int) $individual['family_id'], $individual);
+    }
     ActivityLogger::log('delete', 'individual', (int) $id, 'حذف فرد: ' . $individual['name']);
     $this->json(['success' => true, 'message' => 'تم حذف الفرد بنجاح']);
   }
@@ -171,6 +175,12 @@ class IndividualController extends Controller
         $errors['national_id'] = $nidError;
       } elseif ($this->model->nationalIdExists($data['national_id'], $excludeId)) {
         $errors['national_id'] = 'الرقم القومي مستخدم مسبقاً';
+      }
+    }
+    if (!empty($data['family_id'])) {
+      $family = (new Family())->find((int) $data['family_id']);
+      if (!$family) {
+        $errors['family_id'] = 'العائلة المحددة غير موجودة';
       }
     }
 

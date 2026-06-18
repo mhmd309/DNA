@@ -1,5 +1,5 @@
 const App = {
-  baseUrl: '/DNA',
+  baseUrl: window.DNA_BASE_URL || '/DNA',
 
   init() {
     this.initTheme();
@@ -17,8 +17,7 @@ const App = {
     const popup = document.getElementById('imagePreviewPopup');
     const previewImg = document.getElementById('previewImage');
     const closeBtn = document.getElementById('closeImagePreview');
-
-    // Open preview on image or preview container click
+    if (!popup || !previewImg || !closeBtn) return;
     document.addEventListener('click', (e) => {
       let src = null;
       if (e.target.tagName === 'IMG' && e.target.src && e.target.src !== window.location.href) {
@@ -185,13 +184,10 @@ const App = {
         return;
       }
       timeout = setTimeout(async () => {
-        try {
-          const res = await fetch(`${this.baseUrl}/api/search?q=${encodeURIComponent(q)}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-          });
-          const data = await res.json();
-          this.renderSearchResults(data.results || [], results);
-        } catch {
+        const result = await Api.request(`${this.baseUrl}/api/search?q=${encodeURIComponent(q)}`);
+        if (result.data.success) {
+          this.renderSearchResults(result.data.results || [], results);
+        } else {
           results.classList.add('hidden');
         }
       }, 300);
@@ -235,20 +231,13 @@ const App = {
         const confirmed = await Confirm.show(`هل أنت متأكد من حذف ${name}؟`);
         if (!confirmed) return;
 
-        try {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-          });
-          const data = await res.json();
-          if (data.success) {
-            Toast.show(data.message, 'success');
-            setTimeout(() => location.reload(), 1000);
-          } else {
-            Toast.show(data.message, 'error');
-          }
-        } catch {
-          Toast.show('حدث خطأ أثناء الحذف', 'error');
+        const result = await Api.request(url, { method: 'POST' });
+        const data = result.data;
+        if (data.success) {
+          Toast.show(data.message, 'success');
+          setTimeout(() => location.reload(), 1000);
+        } else if (!handleApiFeedback(data)) {
+          Toast.show(data.message || 'تعذر حذف السجل', 'error');
         }
       });
     });
@@ -388,6 +377,106 @@ const App = {
   }
 };
 
+const Api = {
+  statusMessages: {
+    400: 'طلب غير صالح',
+    401: 'انتهت جلستك، يرجى تسجيل الدخول مرة أخرى',
+    403: 'انتهت صلاحية الصفحة أو لا تملك صلاحية لهذا الإجراء',
+    404: 'العنصر المطلوب غير موجود',
+    422: 'يرجى مراجعة البيانات المدخلة',
+    429: 'طلبات كثيرة، انتظر قليلاً ثم حاول مجدداً',
+    500: 'حدث خطأ في الخادم، يرجى المحاولة لاحقاً',
+    502: 'الخادم غير متاح حالياً',
+    503: 'الخدمة غير متاحة مؤقتاً',
+  },
+
+  statusMessage(status) {
+    return this.statusMessages[status] || `حدث خطأ غير متوقع (${status})`;
+  },
+
+  networkMessage() {
+    if (!navigator.onLine) {
+      return 'لا يوجد اتصال بالإنترنت، تحقق من الشبكة وحاول مجدداً';
+    }
+    return 'تعذر الاتصال بالخادم، تحقق من الاتصال وحاول مجدداً';
+  },
+
+  async parseResponse(res) {
+    const contentType = (res.headers.get('content-type') || '').toLowerCase();
+
+    if (contentType.includes('application/json')) {
+      try {
+        const data = await res.json();
+        if (!res.ok && !data.message) {
+          data.message = this.statusMessage(res.status);
+        }
+        return { ok: res.ok, status: res.status, data };
+      } catch {
+        return {
+          ok: false,
+          status: res.status,
+          data: { success: false, message: this.statusMessage(res.status) },
+        };
+      }
+    }
+
+    if (res.status === 401) {
+      return {
+        ok: false,
+        status: 401,
+        data: {
+          success: false,
+          message: this.statusMessage(401),
+          redirect: `${App.baseUrl}/login`,
+        },
+      };
+    }
+
+    return {
+      ok: false,
+      status: res.status,
+      data: { success: false, message: this.statusMessage(res.status) },
+    };
+  },
+
+  async request(url, options = {}) {
+    const headers = { ...(options.headers || {}) };
+    if (!headers['X-Requested-With']) {
+      headers['X-Requested-With'] = 'XMLHttpRequest';
+    }
+
+    const method = (options.method || 'GET').toUpperCase();
+    if (method === 'POST') {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      if (csrfToken && !headers['X-CSRF-TOKEN']) {
+        headers['X-CSRF-TOKEN'] = csrfToken;
+      }
+    }
+
+    try {
+      const res = await fetch(url, { ...options, headers });
+      return await this.parseResponse(res);
+    } catch {
+      return {
+        ok: false,
+        status: 0,
+        data: { success: false, message: this.networkMessage() },
+      };
+    }
+  },
+};
+
+function handleApiFeedback(data, type = 'error') {
+  if (!data?.message) return false;
+
+  Toast.show(data.message, data.redirect ? 'warning' : type);
+  if (data.redirect) {
+    setTimeout(() => { window.location.href = data.redirect; }, 1200);
+    return true;
+  }
+  return false;
+}
+
 const Toast = {
   container: null,
 
@@ -457,12 +546,11 @@ async function submitForm(form, options = {}) {
 
   try {
     const formData = new FormData(form);
-    const res = await fetch(form.action, {
+    const result = await Api.request(form.action, {
       method: 'POST',
       body: formData,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
     });
-    const data = await res.json();
+    const data = result.data;
 
     if (data.success) {
       Toast.show(data.message, 'success');
@@ -471,8 +559,10 @@ async function submitForm(form, options = {}) {
       } else if (options.onSuccess) {
         options.onSuccess(data);
       }
+    } else if (handleApiFeedback(data)) {
+      // تم التعامل مع إعادة التوجيه (مثل انتهاء الجلسة)
     } else {
-      Toast.show(data.message || 'حدث خطأ', 'error');
+      Toast.show(data.message || 'تعذر إتمام العملية', 'error');
       if (data.errors) {
         Object.entries(data.errors).forEach(([field, msg]) => {
           const el = form.querySelector(`[name="${field}"], [data-error="${field}"]`);
@@ -490,7 +580,7 @@ async function submitForm(form, options = {}) {
       }
     }
   } catch {
-    Toast.show('حدث خطأ في الاتصال', 'error');
+    Toast.show(Api.networkMessage(), 'error');
   } finally {
     if (btn) {
       btn.disabled = false;

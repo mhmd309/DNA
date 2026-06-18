@@ -18,6 +18,7 @@ $roles = ['admin' => 'مدير النظام', 'manager' => 'مدير', 'data_ent
 </div>
 
 <form id="userForm" action="<?= $baseUrl ?>/users/<?= $action ?>" method="POST" enctype="multipart/form-data" class="max-w-2xl">
+  <?= csrf_field() ?>
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>

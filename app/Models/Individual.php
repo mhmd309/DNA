@@ -152,13 +152,15 @@ class Individual extends Model
     $stmt->execute();
     if ($stmt->get_result()->fetch_assoc()) return true;
 
-    // عند التعديل، لا نتحقق من family_members لأنه قد يكون نفس الشخص
+    $sql2 = 'SELECT id FROM family_members WHERE national_id = ? AND deleted_at IS NULL';
     if ($excludeId) {
-      return false;
+      $sql2 .= ' AND (individual_id IS NULL OR individual_id != ?)';
+      $stmt2 = $this->db->prepare($sql2);
+      $stmt2->bind_param('si', $nationalId, $excludeId);
+    } else {
+      $stmt2 = $this->db->prepare($sql2);
+      $stmt2->bind_param('s', $nationalId);
     }
-
-    $stmt2 = $this->db->prepare('SELECT id FROM family_members WHERE national_id = ? AND deleted_at IS NULL');
-    $stmt2->bind_param('s', $nationalId);
     $stmt2->execute();
     return (bool) $stmt2->get_result()->fetch_assoc();
   }

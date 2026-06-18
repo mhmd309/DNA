@@ -25,6 +25,7 @@ if (!empty($ind['family_name'])) {
 </div>
 
 <form id="individualForm" action="<?= $baseUrl ?>/individuals/<?= $action ?>" method="POST" class="max-w-3xl">
+  <?= csrf_field() ?>
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -65,9 +66,15 @@ if (!empty($ind['family_name'])) {
       </div>
       <div class="sm:col-span-2">
         <label class="block text-sm font-medium mb-1">العائلة (اختياري)</label>
-        <div class="searchable-select relative" data-api="<?= $baseUrl ?>/api/families/search">
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">يمكنك تغيير العائلة لنقل الفرد تلقائياً، أو إزالة الاختيار لفك الربط.</p>
+        <div class="searchable-select relative" data-api="<?= $baseUrl ?>/api/families/search" data-clearable="1">
           <input type="hidden" name="family_id" class="ss-hidden" value="<?= e($ind['family_id'] ?? '') ?>">
-          <input type="text" class="ss-input w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50" placeholder="ابحث عن عائلة..." value="<?= e($familyText) ?>">
+          <div class="flex gap-2">
+            <input type="text" class="ss-input flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50" placeholder="ابحث عن عائلة..." value="<?= e($familyText) ?>">
+            <button type="button" class="ss-clear px-3 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition text-gray-500" title="إزالة العائلة">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
           <div class="ss-dropdown searchable-select-dropdown hidden absolute top-full mt-1 w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50"></div>
         </div>
       </div>

@@ -22,6 +22,7 @@ $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 </div>
 
 <form id="familyForm" action="<?= $baseUrl ?>/families/<?= $action ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+  <?= csrf_field() ?>
   <!-- Section 1 -->
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
     <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 text-sm">1</span> بيانات العائلة</h2>

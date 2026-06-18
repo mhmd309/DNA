@@ -48,6 +48,10 @@ class Router
 
         $controller = new $controllerClass();
 
+        if ($route['method'] === 'POST') {
+          Csrf::validateOrFail();
+        }
+
         if ($route['permission'] !== null) {
           Auth::requirePermission($route['permission']);
         }

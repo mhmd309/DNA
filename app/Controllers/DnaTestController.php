@@ -54,7 +54,7 @@ class DnaTestController extends Controller
     $id = $this->model->create($data, Auth::id());
     $this->handleAttachments($id);
     ActivityLogger::log('create', 'dna_test', $id, 'إضافة فحص DNA: ' . $data['person_name']);
-    $this->json(['success' => true, 'message' => 'تم إضافة الفحص بنجاح', 'redirect' => '/DNA/dna-tests']);
+    $this->json(['success' => true, 'message' => 'تم إضافة الفحص بنجاح', 'redirect' => $this->redirectUrl('dna-tests')]);
   }
 
   public function show(string $id): void
@@ -99,7 +99,7 @@ class DnaTestController extends Controller
     $this->model->update($testId, $data);
     $this->handleAttachments($testId);
     ActivityLogger::log('update', 'dna_test', $testId, 'تعديل فحص DNA: ' . $data['person_name']);
-    $this->json(['success' => true, 'message' => 'تم تحديث الفحص بنجاح', 'redirect' => '/DNA/dna-tests/show/' . $testId]);
+    $this->json(['success' => true, 'message' => 'تم تحديث الفحص بنجاح', 'redirect' => $this->redirectUrl('dna-tests/show/' . $testId)]);
   }
 
   public function delete(string $id): void
@@ -157,25 +157,31 @@ class DnaTestController extends Controller
   {
     $config = require __DIR__ . '/../../config/app.php';
 
-    if (empty($_FILES['attachments']['name'][0])) {
-      return;
+    $removeIds = $_POST['remove_attachments'] ?? [];
+    if (is_array($removeIds)) {
+      foreach ($removeIds as $attachmentId) {
+        $attachmentId = (int) $attachmentId;
+        if ($attachmentId <= 0) {
+          continue;
+        }
+        $path = $this->model->deleteAttachment($attachmentId, $testId);
+        if ($path) {
+          Uploader::delete($path);
+        }
+      }
     }
 
-    // Delete all old attachments first
-    $oldFilePaths = $this->model->deleteAllAttachments($testId);
-    // Delete old files from disk
-    foreach ($oldFilePaths as $path) {
-      $fullPath = __DIR__ . '/../../public/' . $path;
-      if (file_exists($fullPath)) {
-        unlink($fullPath);
-      }
+    if (empty($_FILES['attachments']['name'][0])) {
+      return;
     }
 
     $files = $_FILES['attachments'];
     $count = count($files['name']);
 
     for ($i = 0; $i < $count; $i++) {
-      if (empty($files['name'][$i])) continue;
+      if (empty($files['name'][$i])) {
+        continue;
+      }
 
       $file = [
         'name'     => $files['name'][$i],

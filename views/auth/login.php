@@ -22,6 +22,7 @@ require_once dirname(__DIR__) . '/init.php';
     </div>
 
     <form id="loginForm" action="<?= $baseUrl ?>/login" method="POST" class="space-y-5">
+      <?= csrf_field() ?>
       <div>
         <label class="block text-sm font-medium mb-1.5">البريد الإلكتروني</label>
         <div class="relative">
