@@ -482,18 +482,26 @@ class Family extends Model
   {
     $newFamilyId = !empty($data['family_id']) ? (int) $data['family_id'] : null;
     $oldFamilyId = !empty($previous['family_id']) ? (int) $previous['family_id'] : null;
+    $preservedIdCard = null;
 
     if ($oldFamilyId && $oldFamilyId !== $newFamilyId) {
+      $memberId = $this->findChildMemberForIndividual($oldFamilyId, $individualId, $previous);
+      if ($memberId) {
+        $oldMember = $this->getMemberById($memberId);
+        if (!empty($oldMember['id_card_image'])) {
+          $preservedIdCard = $oldMember['id_card_image'];
+        }
+      }
       $this->removeChildLinkedToIndividual($individualId, $oldFamilyId, $previous);
     }
 
     if ($newFamilyId) {
       $data['family_id'] = $newFamilyId;
-      $this->upsertChildFromIndividual($data, $individualId);
+      $this->upsertChildFromIndividual($data, $individualId, $preservedIdCard);
     }
   }
 
-  public function upsertChildFromIndividual(array $data, ?int $individualId = null): void
+  public function upsertChildFromIndividual(array $data, ?int $individualId = null, ?string $preservedIdCard = null): void
   {
     if (empty($data['family_id'])) {
       return;
@@ -505,12 +513,115 @@ class Family extends Model
     }
 
     $memberId = $this->findChildMemberForIndividual($familyId, $individualId, $data);
+    $data = $this->enrichChildDataWithIdCard($data, $individualId, $memberId, $preservedIdCard);
+
     if ($memberId) {
       $this->updateMember($familyId, $memberId, 'child', $data, 0);
       return;
     }
 
     $this->insertMember($familyId, 'child', $data, 0);
+  }
+
+  private function getMemberById(int $memberId): ?array
+  {
+    $stmt = $this->db->prepare('SELECT * FROM family_members WHERE id = ? LIMIT 1');
+    $stmt->bind_param('i', $memberId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc() ?: null;
+  }
+
+  private function findIdCardForIndividual(?int $individualId, array $criteria = []): ?string
+  {
+    if ($individualId) {
+      $stmt = $this->db->prepare(
+        "SELECT id_card_image FROM family_members
+         WHERE individual_id = ? AND id_card_image IS NOT NULL AND id_card_image != ''
+         ORDER BY deleted_at IS NULL DESC, updated_at DESC
+         LIMIT 1"
+      );
+      $stmt->bind_param('i', $individualId);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if (!empty($row['id_card_image'])) {
+        return $row['id_card_image'];
+      }
+    }
+
+    $nationalId = $criteria['national_id'] ?? null;
+    if (!empty($nationalId)) {
+      $stmt = $this->db->prepare(
+        "SELECT id_card_image FROM family_members
+         WHERE national_id = ? AND id_card_image IS NOT NULL AND id_card_image != ''
+         ORDER BY deleted_at IS NULL DESC, updated_at DESC
+         LIMIT 1"
+      );
+      $stmt->bind_param('s', $nationalId);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if (!empty($row['id_card_image'])) {
+        return $row['id_card_image'];
+      }
+    }
+
+    $name = $criteria['name'] ?? null;
+    $birthDate = $criteria['birth_date'] ?? null;
+    if (!empty($name) && !empty($birthDate)) {
+      $stmt = $this->db->prepare(
+        "SELECT id_card_image FROM family_members
+         WHERE name = ? AND birth_date = ? AND id_card_image IS NOT NULL AND id_card_image != ''
+         ORDER BY deleted_at IS NULL DESC, updated_at DESC
+         LIMIT 1"
+      );
+      $stmt->bind_param('ss', $name, $birthDate);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if (!empty($row['id_card_image'])) {
+        return $row['id_card_image'];
+      }
+    }
+
+    return null;
+  }
+
+  private function enrichChildDataWithIdCard(array $data, ?int $individualId, ?int $existingMemberId = null, ?string $preservedIdCard = null): array
+  {
+    if (!empty($data['id_card_image'])) {
+      return $data;
+    }
+
+    if ($preservedIdCard) {
+      $data['id_card_image'] = $preservedIdCard;
+      return $data;
+    }
+
+    if ($existingMemberId) {
+      $existing = $this->getMemberById($existingMemberId);
+      if (!empty($existing['id_card_image'])) {
+        $data['id_card_image'] = $existing['id_card_image'];
+        return $data;
+      }
+    }
+
+    if ($individualId) {
+      $stmt = $this->db->prepare(
+        'SELECT id_card_image FROM individuals WHERE id = ? AND deleted_at IS NULL LIMIT 1'
+      );
+      $stmt->bind_param('i', $individualId);
+      $stmt->execute();
+      $row = $stmt->get_result()->fetch_assoc();
+      if (!empty($row['id_card_image'])) {
+        $data['id_card_image'] = $row['id_card_image'];
+        return $data;
+      }
+    }
+
+    $fromHistory = $this->findIdCardForIndividual($individualId, $data);
+    if ($fromHistory) {
+      $data['id_card_image'] = $fromHistory;
+    }
+
+    return $data;
   }
 
   public function removeChildLinkedToIndividual(int $individualId, int $familyId, array $fallback = []): void

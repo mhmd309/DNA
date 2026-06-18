@@ -84,6 +84,7 @@ CREATE TABLE `individuals` (
   `birth_date` DATE DEFAULT NULL,
   `gender` ENUM('male', 'female') NOT NULL,
   `family_id` INT UNSIGNED DEFAULT NULL,
+  `id_card_image` VARCHAR(255) DEFAULT NULL,
   `status` ENUM('normal', 'missing', 'unidentified', 'deceased') NOT NULL DEFAULT 'normal',
   `D3S1358_1` VARCHAR(20) DEFAULT NULL,
   `D3S1358_2` VARCHAR(20) DEFAULT NULL,

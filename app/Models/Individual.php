@@ -64,17 +64,19 @@ class Individual extends Model
     $d21s11_2 = $data['D21S11_2'] ?? null;
 
     $stmt = $this->db->prepare(
-      'INSERT INTO individuals (name, national_id, blood_type, birth_date, gender, family_id, status, D3S1358_1, D3S1358_2, vWA_1, vWA_2, FGA_1, FGA_2, D8S1179_1, D8S1179_2, D21S11_1, D21S11_2, created_by)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO individuals (name, national_id, blood_type, birth_date, gender, family_id, id_card_image, status, D3S1358_1, D3S1358_2, vWA_1, vWA_2, FGA_1, FGA_2, D8S1179_1, D8S1179_2, D21S11_1, D21S11_2, created_by)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
+    $idCardImage = !empty($data['id_card_image']) ? $data['id_card_image'] : null;
     $stmt->bind_param(
-      'sssssisssssssssssi',
+      'sssssiss' . 'ssssssssss' . 'i',
       $data['name'],
       $nationalId,
       $bloodType,
       $birthDate,
       $data['gender'],
       $familyId,
+      $idCardImage,
       $data['status'],
       $d3s1358_1,
       $d3s1358_2,
@@ -110,16 +112,18 @@ class Individual extends Model
     $d21s11_2 = $data['D21S11_2'] ?? null;
 
     $stmt = $this->db->prepare(
-      'UPDATE individuals SET name = ?, national_id = ?, blood_type = ?, birth_date = ?, gender = ?, family_id = ?, status = ?, D3S1358_1 = ?, D3S1358_2 = ?, vWA_1 = ?, vWA_2 = ?, FGA_1 = ?, FGA_2 = ?, D8S1179_1 = ?, D8S1179_2 = ?, D21S11_1 = ?, D21S11_2 = ? WHERE id = ?'
+      'UPDATE individuals SET name = ?, national_id = ?, blood_type = ?, birth_date = ?, gender = ?, family_id = ?, id_card_image = ?, status = ?, D3S1358_1 = ?, D3S1358_2 = ?, vWA_1 = ?, vWA_2 = ?, FGA_1 = ?, FGA_2 = ?, D8S1179_1 = ?, D8S1179_2 = ?, D21S11_1 = ?, D21S11_2 = ? WHERE id = ?'
     );
+    $idCardImage = !empty($data['id_card_image']) ? $data['id_card_image'] : null;
     $stmt->bind_param(
-      'sssssisssssssssssi',
+      'sssssiss' . 'ssssssssss' . 'i',
       $data['name'],
       $nationalId,
       $bloodType,
       $birthDate,
       $data['gender'],
       $familyId,
+      $idCardImage,
       $data['status'],
       $d3s1358_1,
       $d3s1358_2,

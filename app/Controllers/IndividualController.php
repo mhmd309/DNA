@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Core\ActivityLogger;
 use App\Core\Auth;
 use App\Core\Controller;
+use App\Core\Uploader;
 use App\Models\Family;
 use App\Models\Individual;
 
@@ -53,6 +54,7 @@ class IndividualController extends Controller
       $this->json(['success' => false, 'message' => reset($errors), 'errors' => $errors], 422);
     }
 
+    $this->handleIdCardUpload($data);
     $id = $this->model->create($data, Auth::id());
     (new Family())->syncIndividualFamilyLink($id, $data);
     ActivityLogger::log('create', 'individual', $id, 'إضافة فرد: ' . $data['name']);
@@ -99,6 +101,7 @@ class IndividualController extends Controller
       $this->json(['success' => false, 'message' => reset($errors), 'errors' => $errors], 422);
     }
 
+    $this->handleIdCardUpload($data, $existing);
     $this->model->update($individualId, $data);
     (new Family())->syncIndividualFamilyLink($individualId, $data, $existing);
     ActivityLogger::log('update', 'individual', $individualId, 'تعديل فرد: ' . $data['name']);
@@ -151,7 +154,27 @@ class IndividualController extends Controller
       'D8S1179_2'         => $input['D8S1179_2'] ?? null,
       'D21S11_1'          => $input['D21S11_1'] ?? null,
       'D21S11_2'          => $input['D21S11_2'] ?? null,
+      'id_card_image'     => $input['id_card_image'] ?? '',
     ];
+  }
+
+  private function handleIdCardUpload(array &$data, ?array $existing = null): void
+  {
+    $config = require __DIR__ . '/../../config/app.php';
+
+    if (!empty($_FILES['id_card']['name'])) {
+      $upload = Uploader::upload($_FILES['id_card'], 'id_cards', $config['allowed_images']);
+      if ($upload['success']) {
+        if (!empty($existing['id_card_image'])) {
+          Uploader::delete($existing['id_card_image']);
+        }
+        $data['id_card_image'] = $upload['path'];
+      }
+    } elseif (!empty($data['id_card_image'])) {
+      // احتفظ بالقيمة المرسلة من النموذج
+    } elseif ($existing && !empty($existing['id_card_image'])) {
+      $data['id_card_image'] = $existing['id_card_image'];
+    }
   }
 
   private function validate(array $data, ?int $excludeId = null): array

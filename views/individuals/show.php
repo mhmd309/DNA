@@ -34,6 +34,12 @@ require_once dirname(__DIR__) . '/init.php';
       <?php endif; ?>
     </div>
     <div><span class="text-gray-500 block mb-1">تاريخ التسجيل</span><span class="font-medium"><?= e(formatDateTime($individual['created_at'])) ?></span></div>
+    <?php if (!empty($individual['id_card_image'])): ?>
+      <div class="sm:col-span-2">
+        <span class="text-gray-500 block mb-2">صورة البطاقة</span>
+        <img src="<?= uploadUrl($individual['id_card_image']) ?>" alt="بطاقة" class="max-w-xs rounded-lg border border-gray-200 dark:border-gray-600">
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 

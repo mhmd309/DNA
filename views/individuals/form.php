@@ -24,8 +24,9 @@ if (!empty($ind['family_name'])) {
   <h1 class="text-2xl font-bold"><?= $isEdit ? 'تعديل فرد' : 'إضافة فرد' ?></h1>
 </div>
 
-<form id="individualForm" action="<?= $baseUrl ?>/individuals/<?= $action ?>" method="POST" class="max-w-3xl">
+<form id="individualForm" action="<?= $baseUrl ?>/individuals/<?= $action ?>" method="POST" enctype="multipart/form-data" class="max-w-3xl">
   <?= csrf_field() ?>
+  <input type="hidden" name="id_card_image" value="<?= e($ind['id_card_image'] ?? '') ?>">
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -77,6 +78,13 @@ if (!empty($ind['family_name'])) {
           </div>
           <div class="ss-dropdown searchable-select-dropdown hidden absolute top-full mt-1 w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50"></div>
         </div>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-medium mb-1">صورة البطاقة</label>
+        <input type="file" name="id_card" accept="image/*" class="w-full text-sm">
+        <?php if (!empty($ind['id_card_image'])): ?>
+          <img src="<?= uploadUrl($ind['id_card_image']) ?>" alt="بطاقة" class="mt-2 h-24 rounded-lg border border-gray-200 dark:border-gray-600">
+        <?php endif; ?>
       </div>
     </div>
   </div>
