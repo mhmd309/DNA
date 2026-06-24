@@ -54,7 +54,7 @@ require_once dirname(__DIR__) . '/init.php';
     <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
     <div class="flex flex-col items-center justify-center gap-1.5 relative z-10">
       <div lang="ar" dir="rtl" class="text-[13px] text-slate-300">
-        جميع الحقوق محفوظة لدى <span class="text-primary-400 font-semibold">شركة انتشار للتسويق والبرمجيات</span> <span dir="ltr" class="text-slate-400"><?= date('Y') ?></span> <span class="text-primary-500">©</span>
+        جميع الحقوق محفوظة لدى <span class="text-primary-400 font-semibold">شركة إنتشار للتسويق والبرمجيات</span> <span dir="ltr" class="text-slate-400"><?= date('Y') ?></span> <span class="text-primary-500">©</span>
       </div>
       <div lang="en" dir="ltr" class="text-[11px] text-slate-500 tracking-wider font-medium">
         All rights reserved to <span class="text-slate-400">Enteshar for Marketing and Software</span> <?= date('Y') ?> ©
