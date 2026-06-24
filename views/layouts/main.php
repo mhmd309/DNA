@@ -32,7 +32,7 @@ require_once dirname(__DIR__) . '/init.php';
   <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
   <?php require __DIR__ . '/../partials/navbar.php'; ?>
   <?php require __DIR__ . '/../partials/sidebar.php'; ?>
 
@@ -44,11 +44,24 @@ require_once dirname(__DIR__) . '/init.php';
     <img id="previewImage" src="" alt="معاينة" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl">
   </div>
 
-  <main id="mainContent" class="pt-16 min-h-screen transition-all duration-300 sidebar-open-main">
+  <main id="mainContent" class="pt-16 flex-1 transition-all duration-300 sidebar-open-main">
     <div class="p-4 md:p-6 lg:p-8 fade-in">
       <?= $content ?>
     </div>
   </main>
+
+  <footer class="relative bg-slate-900 px-6 py-3 text-center transition-all duration-300 sidebar-open-main mt-auto border-t border-slate-800">
+    <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
+    <div class="flex flex-col items-center justify-center gap-1.5 relative z-10">
+      <div lang="ar" dir="rtl" class="text-[13px] text-slate-300">
+        جميع الحقوق محفوظة لدى <span class="text-primary-400 font-semibold">شركة انتشار للتسويق والبرمجيات</span> <span dir="ltr" class="text-slate-400"><?= date('Y') ?></span> <span class="text-primary-500">©</span>
+      </div>
+      <div lang="en" dir="ltr" class="text-[11px] text-slate-500 tracking-wider font-medium">
+        All rights reserved to <span class="text-slate-400">Enteshar for Marketing and Software</span> <?= date('Y') ?> ©
+      </div>
+    </div>
+  </footer>
+
 
   <script src="<?= $baseUrl ?>/public/assets/js/app.js"></script>
   <script src="<?= $baseUrl ?>/public/assets/js/searchable-select.js"></script>
