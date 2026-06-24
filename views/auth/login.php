@@ -6,7 +6,7 @@
  */
 require_once dirname(__DIR__) . '/init.php';
 ?>
-<div class="login-bg min-h-screen flex items-center justify-center p-4">
+<div class="login-bg min-h-screen flex items-center justify-center p-4" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('<?= $baseUrl ?>/public/bgsite.jpg'); background-size: cover; background-position: center;">
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-500/20 rounded-full blur-3xl"></div>
     <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl"></div>
